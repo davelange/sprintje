@@ -16,7 +16,7 @@ class Game {
     new Character().addToScene();
   }
 
-  addCharacter(el: any) {
+  addCharacter(el: Character) {
     this.character = el;
   }
 
@@ -32,8 +32,6 @@ class Game {
 
   detectCollisions() {
     const collision = this.obstacles.find((obs) => this.character.colides(obs));
-
-    console.log(collision);
 
     if (collision) {
       this.status = 'idle';

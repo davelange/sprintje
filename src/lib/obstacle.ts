@@ -1,15 +1,16 @@
+import Element from './element';
 import game from './game';
 
-class Obstacle {
+class Obstacle extends Element {
   enabled = true;
-  x = 600;
-  y = 200;
-  width = 200;
-  height = 100;
-  id = Date.now();
 
   constructor() {
+    super();
+
     this.x = game.el.width;
+    this.y = 200;
+    this.width = 200;
+    this.height = 100;
 
     return this;
   }
@@ -18,7 +19,7 @@ class Obstacle {
     game.addObstacle(this);
   }
 
-  handleUpdate() {
+  update() {
     if (!this.enabled) return;
 
     this.x -= 2;
@@ -29,19 +30,8 @@ class Obstacle {
     }
   }
 
-  getCoords() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-      rightEdge: this.x + this.width,
-      bottomEdge: this.y + this.height
-    };
-  }
-
   render() {
-    this.handleUpdate();
+    this.update();
 
     game.ctx.fillStyle = 'rgb(0, 0, 200)';
     game.ctx.fillRect(this.x, this.y, this.width, this.height);
