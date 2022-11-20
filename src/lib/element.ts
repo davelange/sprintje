@@ -1,9 +1,23 @@
+export interface ElementConfig {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
 class Element {
   x = 0;
   y = 0;
   width = 0;
   height = 0;
   id = Date.now();
+
+  constructor(config: ElementConfig) {
+    this.width = config.width;
+    this.height = config.height;
+    this.x = config.x;
+    this.y = config.y;
+  }
 
   getCoords() {
     return {

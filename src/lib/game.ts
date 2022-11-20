@@ -1,5 +1,13 @@
 import Character from './character';
+import {
+  CHAR_HEIGHT,
+  CHAR_OFFSET_X,
+  CHAR_OFFSET_Y,
+  LEVEL_REQS,
+  OBSTACLE_VARIATIONS
+} from './constants';
 import Obstacle from './obstacle';
+import { rand } from './utils/rand';
 
 class Game {
   status: 'running' | 'idle' = 'idle';
@@ -8,12 +16,19 @@ class Game {
   character: Character;
   obstacles: Obstacle[] = [];
   frame = 0;
+  lvl: 1 | 2 | 3 | 4 = 1;
+  clearedObs = 0;
 
   init(canvasEl: HTMLCanvasElement) {
     this.el = canvasEl;
     this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
 
-    new Character().addToScene();
+    new Character({
+      width: 50,
+      height: CHAR_HEIGHT,
+      x: CHAR_OFFSET_X,
+      y: this.el.offsetHeight - CHAR_HEIGHT - CHAR_OFFSET_Y
+    }).addToScene();
   }
 
   addCharacter(el: Character) {
@@ -22,16 +37,21 @@ class Game {
 
   addObstacle(el: Obstacle) {
     this.obstacles.push(el);
-    console.log(`added obs ${el.id}`);
   }
 
   removeObstacle(id: number) {
     this.obstacles = this.obstacles.filter((obs) => obs.id !== id);
-    console.log(`removed obs ${id}`);
+    this.clearedObs++;
+    console.log(this.clearedObs);
+
+    if (LEVEL_REQS[this.clearedObs]) {
+      console.log(`${this.clearedObs} cleared, move to level ${this.lvl + 1}`);
+      this.lvl++;
+    }
   }
 
   detectCollisions() {
-    const collision = this.obstacles.find((obs) => this.character.colides(obs));
+    const collision = this.obstacles.find((obs) => obs.colides(this.character));
 
     if (collision) {
       this.status = 'idle';
@@ -39,15 +59,20 @@ class Game {
   }
 
   manageObstacles() {
-    if (!this.obstacles.length) {
-      new Obstacle().addToScene();
+    const lastObsPos = this.obstacles?.[this.obstacles.length - 1]?.x;
+
+    if (lastObsPos && lastObsPos > 200) {
+      return;
     }
 
-    const lastObsPos = this.obstacles[this.obstacles.length - 1].x;
+    const randObs = OBSTACLE_VARIATIONS[rand(0, 3)];
+    const config = {
+      x: this.el.width,
+      y: this.el.offsetHeight - randObs.height - CHAR_OFFSET_Y,
+      ...randObs
+    };
 
-    if (lastObsPos < 200) {
-      new Obstacle().addToScene();
-    }
+    new Obstacle(config).addToScene();
   }
 
   render() {

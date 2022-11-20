@@ -1,16 +1,12 @@
-import Element from './element';
+import { OBS_SPEED } from './constants';
+import Element, { type ElementConfig } from './element';
 import game from './game';
 
 class Obstacle extends Element {
   enabled = true;
 
-  constructor() {
-    super();
-
-    this.x = game.el.width;
-    this.y = 200;
-    this.width = 200;
-    this.height = 100;
+  constructor(config: ElementConfig) {
+    super(config);
 
     return this;
   }
@@ -22,9 +18,9 @@ class Obstacle extends Element {
   update() {
     if (!this.enabled) return;
 
-    this.x -= 2;
+    this.x -= OBS_SPEED[game.lvl];
 
-    if (this.x + this.width < game.el.offsetLeft) {
+    if (this.x + this.width < 0) {
       this.enabled = false;
       game.removeObstacle(this.id);
     }
