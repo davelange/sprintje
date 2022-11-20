@@ -4,7 +4,10 @@ import {
   CHAR_OFFSET_X,
   CHAR_OFFSET_Y,
   LEVEL_REQS,
-  OBSTACLE_VARIATIONS
+  OBSTACLE_VARIATIONS,
+  OBS_DIST,
+  OBS_RESET_DIST,
+  OBS_RESET_FREQ
 } from './constants';
 import Obstacle from './obstacle';
 import { rand } from './utils/rand';
@@ -18,6 +21,8 @@ class Game {
   frame = 0;
   lvl: 1 | 2 | 3 | 4 = 1;
   clearedObs = 0;
+  obsLog: number[] = [];
+  obsCycle = 0;
 
   init(canvasEl: HTMLCanvasElement) {
     this.el = canvasEl;
@@ -42,7 +47,6 @@ class Game {
   removeObstacle(id: number) {
     this.obstacles = this.obstacles.filter((obs) => obs.id !== id);
     this.clearedObs++;
-    console.log(this.clearedObs);
 
     if (LEVEL_REQS[this.clearedObs]) {
       console.log(`${this.clearedObs} cleared, move to level ${this.lvl + 1}`);
@@ -58,19 +62,44 @@ class Game {
     }
   }
 
-  manageObstacles() {
-    const lastObsPos = this.obstacles?.[this.obstacles.length - 1]?.x;
+  getObsMaxDistance() {
+    const cycleReset = OBS_RESET_FREQ[this.lvl];
 
-    if (lastObsPos && lastObsPos > 200) {
+    if (this.obsCycle === cycleReset) {
+      return OBS_RESET_DIST;
+    }
+
+    return OBS_DIST[this.lvl] - rand(0, 100);
+  }
+
+  manageObstacles() {
+    const lastObsX = this.obstacles?.[this.obstacles.length - 1]?.x;
+    const maxDist = this.getObsMaxDistance();
+
+    if (lastObsX && lastObsX >= maxDist) {
       return;
     }
 
-    const randObs = OBSTACLE_VARIATIONS[rand(0, 3)];
+    const randInd = rand(0, 3);
+    const recentOccurences = this.obsLog.slice(-5).filter((n) => n === randInd).length;
+
+    if (recentOccurences > 3) {
+      return;
+    }
+
+    const randObs = OBSTACLE_VARIATIONS[randInd];
     const config = {
       x: this.el.width,
       y: this.el.offsetHeight - randObs.height - CHAR_OFFSET_Y,
       ...randObs
     };
+    this.obsLog.push(randInd);
+
+    if (this.obsCycle === 6) {
+      this.obsCycle = 0;
+    } else {
+      this.obsCycle++;
+    }
 
     new Obstacle(config).addToScene();
   }
