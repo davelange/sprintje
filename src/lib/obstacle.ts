@@ -11,10 +11,6 @@ class Obstacle extends Element {
     return this;
   }
 
-  addToScene() {
-    game.addObstacle(this);
-  }
-
   update() {
     if (!this.enabled) return;
 

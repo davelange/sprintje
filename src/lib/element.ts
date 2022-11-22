@@ -14,6 +14,7 @@ class Element {
   height = 0;
   img: HTMLImageElement;
   imgRatio = 0;
+  /* imgBtmp: ImageBitmap; */
   imgReady = false;
 
   constructor(config: ElementConfig) {
@@ -27,10 +28,15 @@ class Element {
       this.img.src = `img/${config.imgSrc}`;
 
       this.img.onload = (evt) => {
-        this.imgReady = true;        
+        this.imgReady = true;
         this.imgRatio = this.img.width / this.img.height;
+        /* this.imgBtmp = createImageBitmap(this.img, ) */
       };
     }
+  }
+
+  addToScene(scene: Element[]) {
+    scene.push(this);
   }
 
   getCoords() {

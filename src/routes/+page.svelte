@@ -24,10 +24,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #424242;
+    background: #f1f1f1;
   }
   canvas {
-    border: 1px solid black;
     width: 1000px;
     aspect-ratio: 2.6 / 1;
     margin: auto;

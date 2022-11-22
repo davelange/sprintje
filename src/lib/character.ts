@@ -104,7 +104,7 @@ class Character extends Element {
           this.state = 'running';
           this.y = this.initial.y;
         }
-        break;
+        break;      
     }
   }
 

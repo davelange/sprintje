@@ -29,7 +29,6 @@ class Game {
   init(canvasEl: HTMLCanvasElement) {
     this.el = canvasEl;
     this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
-    this.ctx.imageSmoothingEnabled = false;
 
     new Character({
       width: 100,
@@ -44,10 +43,6 @@ class Game {
 
   addCharacter(el: Character) {
     this.character = el;
-  }
-
-  addObstacle(el: Obstacle) {
-    this.obstacles.push(el);
   }
 
   removeObstacle(id: number) {
@@ -108,7 +103,7 @@ class Game {
       this.obsCycle++;
     }
 
-    new Obstacle(config).addToScene();
+    new Obstacle(config).addToScene(this.obstacles);
   }
 
   render() {
