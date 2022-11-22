@@ -6,36 +6,20 @@ export const CHAR_OFFSET_Y = 60;
 export const JUMP_DURATION = 17;
 export const GROUND_Y_OFFSET = CHAR_OFFSET_Y + 10;
 
-export const OBS_SPEED: Record<number, number> = {
+/* export const OBS_SPEED: Record<number, number> = {
   1: 5,
   2: 6,
   3: 8,
   4: 10,
   5: 12,
   6: 14
-};
+}; */
 
 const GROUND_OBSTACLE_1 = {
   width: 120,
   height: 70
 };
 
-const GROUND_OBSTACLE_2 = {
-  width: 70,
-  height: 50
-};
-
-const AIR_OBSTACLE_1 = {
-  width: 100,
-  height: 30,
-  y: 120
-};
-
-const AIR_OBSTACLE_2 = {
-  width: 100,
-  height: 30,
-  y: 200
-};
 
 export const LEVEL_REQS: Record<number, number> = {
   10: 2,
@@ -45,14 +29,12 @@ export const LEVEL_REQS: Record<number, number> = {
 
 export const OBSTACLE_VARIATIONS = [
   GROUND_OBSTACLE_1
-  /* GROUND_OBSTACLE_2,
-  AIR_OBSTACLE_1,
-  AIR_OBSTACLE_2 */
+  
 ];
 
 export const OBS_RESET_DIST = 10;
 
-export const OBS_RESET_FREQ = {
+/* export const OBS_RESET_FREQ = {
   1: 6,
   2: 8,
   3: 4,
@@ -68,7 +50,7 @@ export const OBS_DIST = {
   4: 360,
   5: 380,
   6: 400
-};
+}; */
 
 const SKY_1 = {
   x: 20,

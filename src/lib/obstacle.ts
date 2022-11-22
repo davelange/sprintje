@@ -1,4 +1,4 @@
-import { OBS_SPEED } from './constants';
+import { OBS_SPEED } from './data/obstacles/constants';
 import Element, { type ElementConfig } from './element';
 import game from './game';
 
@@ -27,11 +27,12 @@ class Obstacle extends Element {
       return;
     }
 
+    this.manageSprite();
     this.update();
 
     //game.ctx.strokeStyle = 'rgb(0, 0, 200)';
-//    game.ctx.strokeRect(this.x, this.y, this.width, this.height);
-    game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);
+    //    game.ctx.strokeRect(this.x, this.y, this.width, this.height);
+    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x, this.y);
   }
 }
 

@@ -1,7 +1,7 @@
 import { easeOutCirc } from './utils/ease';
-import { JUMP_DURATION, JUMP_HEIGHT } from './constants';
 import Element, { type ElementConfig } from './element';
 import game from './game';
+import { JUMP_DURATION, JUMP_HEIGHT } from './data/character/constants';
 
 class Character extends Element {
   state: 'idle' | 'running' | 'jump_asc' | 'jump_desc' | 'crouching' = 'idle';
@@ -104,7 +104,7 @@ class Character extends Element {
           this.state = 'running';
           this.y = this.initial.y;
         }
-        break;      
+        break;
     }
   }
 
@@ -114,10 +114,13 @@ class Character extends Element {
     }
 
     this.update();
+    this.manageSprite();
 
     game.ctx.strokeStyle = 'rgb(200, 0, 0)';
     //game.ctx.strokeRect(this.x, this.y, this.width, this.height);
-    game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);
+    //game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);
+    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x, this.y);
+
   }
 }
 

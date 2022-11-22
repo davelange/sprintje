@@ -1,32 +1,34 @@
-import { CLOUD_VARIATIONS, GRASS_ELS, GROUND_Y_OFFSET, SKY_ELS } from './constants';
+import { GROUND_Y_OFFSET } from './data/scenery/constants';
+import { CLOUDS, GRASS, SKYS } from './data/scenery/data';
 import game from './game';
 import Repeater from './repeater';
 
 const color = {
   green1: '#ACD09A',
   green2: '#BEEA9B',
-  blue: '#67B3DD'
+  blue: '#3A9DD4'
 };
 
 export default class Scenery {
-  clouds: Repeater[] = [];
+  elements: Repeater[] = [];
 
   constructor() {
-    SKY_ELS.map((sky) => new Repeater({ ...sky, width: game.el.width }).addToScene(this.clouds));
-    CLOUD_VARIATIONS.map((config) => new Repeater(config).addToScene(this.clouds));
-    GRASS_ELS.map((config, ind) =>
+    this.addRepeaterEls();
+  }
+
+  addRepeaterEls() {
+    SKYS.map((c) => new Repeater({ ...c, width: game.el.width }).addToScene(this.elements));
+    CLOUDS.map((c) => new Repeater(c).addToScene(this.elements));
+    GRASS.map((c, ind) =>
       new Repeater({
-        ...config,
-        width: game.el.width,
-        x: ind * game.el.width,
+        ...c,
+        x: ind * c.width,
         y: game.el.height - GROUND_Y_OFFSET + 30
-      }).addToScene(this.clouds)
+      }).addToScene(this.elements)
     );
   }
 
   renderGround() {
-    /* game.ctx.fillStyle = color.green1;
-    game.ctx.fillRect(0, game.el.height - GROUND_Y_OFFSET, game.el.width, 10); */
     game.ctx.fillStyle = color.green2;
     game.ctx.fillRect(0, game.el.height - GROUND_Y_OFFSET, game.el.width, 100);
   }
@@ -39,6 +41,6 @@ export default class Scenery {
   render() {
     this.renderSky();
     this.renderGround();
-    this.clouds.forEach((cl) => cl.render());
+    this.elements.forEach((el) => el.render());
   }
 }

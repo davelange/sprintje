@@ -4,6 +4,7 @@ export interface ElementConfig {
   x: number;
   y: number;
   imgSrc?: string;
+  btmp?: { sx: number; sy: number; sw: number; sh: number }[];
 }
 
 class Element {
@@ -14,8 +15,10 @@ class Element {
   height = 0;
   img: HTMLImageElement;
   imgRatio = 0;
-  /* imgBtmp: ImageBitmap; */
+  imgBtmp: ImageBitmap[];
   imgReady = false;
+  spriteInd = 0;
+  spriteTrack = 0;
 
   constructor(config: ElementConfig) {
     this.width = config.width;
@@ -27,11 +30,30 @@ class Element {
       this.img = new Image();
       this.img.src = `img/${config.imgSrc}`;
 
-      this.img.onload = (evt) => {
-        this.imgReady = true;
+      this.img.onload = async (evt) => {
         this.imgRatio = this.img.width / this.img.height;
-        /* this.imgBtmp = createImageBitmap(this.img, ) */
+
+        if (config.btmp) {
+          this.imgBtmp = await Promise.all(
+            config.btmp.map(
+              async (val) => await createImageBitmap(this.img, val.sx, val.sy, val.sw, val.sh)
+            )
+          );
+
+          this.imgReady = true;
+        } else {
+          this.imgReady = true;
+        }
       };
+    }
+  }
+
+  manageSprite() {
+    if (this.spriteTrack === 10) {
+      this.spriteTrack = 0;
+      this.spriteInd < this.imgBtmp.length - 1 ? this.spriteInd++ : (this.spriteInd = 0);
+    } else {
+      this.spriteTrack++;
     }
   }
 

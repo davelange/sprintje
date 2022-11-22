@@ -1,14 +1,9 @@
 import Character from './character';
-import {
-  CHAR_HEIGHT,
-  CHAR_OFFSET_X,
-  CHAR_OFFSET_Y,
-  LEVEL_REQS,
-  OBSTACLE_VARIATIONS,
-  OBS_DIST,
-  OBS_RESET_DIST,
-  OBS_RESET_FREQ
-} from './constants';
+import { CHAR_HEIGHT, CHAR_OFFSET_Y } from './data/character/constants';
+import { CHAR } from './data/character/data';
+import { LEVEL_REQS } from './data/game/constants';
+import { OBS_DIST, OBS_RESET_DIST, OBS_RESET_FREQ } from './data/obstacles/constants';
+import { OBS_VARIATIONS } from './data/obstacles/data';
 import Obstacle from './obstacle';
 import Scenery from './scenery';
 import { rand } from './utils/rand';
@@ -31,11 +26,8 @@ class Game {
     this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
 
     new Character({
-      width: 100,
-      height: CHAR_HEIGHT,
-      x: CHAR_OFFSET_X,
-      y: this.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y,
-      imgSrc: 'mono.png'
+      ...CHAR,
+      y: this.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y
     }).addToScene();
 
     this.scenery = new Scenery();
@@ -64,11 +56,11 @@ class Game {
   }
 
   getObsMaxDistance() {
-    const cycleReset = OBS_RESET_FREQ[this.lvl];
+    /* const cycleReset = OBS_RESET_FREQ[this.lvl];
 
     if (this.obsCycle === cycleReset) {
       return OBS_RESET_DIST;
-    }
+    } */
 
     return OBS_DIST[this.lvl] - rand(0, 100);
   }
@@ -81,18 +73,17 @@ class Game {
       return;
     }
 
-    const randInd = rand(0, OBSTACLE_VARIATIONS.length - 1);
-    const recentOccurences = this.obsLog.slice(-5).filter((n) => n === randInd).length;
+    const randInd = rand(0, OBS_VARIATIONS.length - 1);
+    /* const recentOccurences = this.obsLog.slice(-5).filter((n) => n === randInd).length;
 
     if (recentOccurences > 3) {
       return;
-    }
+    } */
 
-    const randObs = OBSTACLE_VARIATIONS[randInd];
+    const randObs = OBS_VARIATIONS[randInd];
     const config = {
       x: this.el.width,
       y: this.el.height - randObs.height - CHAR_OFFSET_Y,
-      imgSrc: 'bike_1.png',
       ...randObs
     };
     this.obsLog.push(randInd);

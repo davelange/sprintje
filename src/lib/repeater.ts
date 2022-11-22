@@ -1,19 +1,22 @@
 import game from './game';
 import Element, { type ElementConfig } from './element';
-import { OBS_SPEED } from './constants';
+import { OBS_SPEED } from './data/obstacles/constants';
 
 interface RepeaterConfig extends ElementConfig {
   speedModifier: number;
+  static?: boolean;
 }
 
 class Repeater extends Element {
   offscreenDistance = 0;
   speedModifier = 0;
+  static = false;
 
   constructor(config: RepeaterConfig) {
     super(config);
 
     this.speedModifier = config.speedModifier;
+    this.static = config?.static || false;
     this.offscreenDistance = config.x + config.width;
   }
 
@@ -30,7 +33,9 @@ class Repeater extends Element {
       return;
     }
 
-    this.update();
+    if (!this.static) {
+      this.update();
+    }
 
     /* game.ctx.strokeStyle = 'rgb(200, 0, 0)';
     game.ctx.strokeRect(this.x, this.y, this.width, this.height); */
