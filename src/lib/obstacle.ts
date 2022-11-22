@@ -27,10 +27,15 @@ class Obstacle extends Element {
   }
 
   render() {
+    if (!this.imgReady) {
+      return;
+    }
+
     this.update();
 
-    game.ctx.fillStyle = 'rgb(0, 0, 200)';
-    game.ctx.fillRect(this.x, this.y, this.width, this.height);
+    //game.ctx.strokeStyle = 'rgb(0, 0, 200)';
+//    game.ctx.strokeRect(this.x, this.y, this.width, this.height);
+    game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);
   }
 }
 

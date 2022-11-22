@@ -109,10 +109,15 @@ class Character extends Element {
   }
 
   render() {
+    if (!this.imgReady) {
+      return;
+    }
+
     this.update();
 
-    game.ctx.fillStyle = 'rgb(200, 0, 0)';
-    game.ctx.fillRect(this.x, this.y, this.width, this.height);
+    game.ctx.strokeStyle = 'rgb(200, 0, 0)';
+    //game.ctx.strokeRect(this.x, this.y, this.width, this.height);
+    game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);
   }
 }
 

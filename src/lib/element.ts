@@ -3,20 +3,34 @@ export interface ElementConfig {
   height: number;
   x: number;
   y: number;
+  imgSrc?: string;
 }
 
 class Element {
+  id = Date.now();
   x = 0;
   y = 0;
   width = 0;
   height = 0;
-  id = Date.now();
+  img: HTMLImageElement;
+  imgRatio = 0;
+  imgReady = false;
 
   constructor(config: ElementConfig) {
     this.width = config.width;
     this.height = config.height;
     this.x = config.x;
     this.y = config.y;
+
+    if (config.imgSrc) {
+      this.img = new Image();
+      this.img.src = `img/${config.imgSrc}`;
+
+      this.img.onload = (evt) => {
+        this.imgReady = true;        
+        this.imgRatio = this.img.width / this.img.height;
+      };
+    }
   }
 
   getCoords() {
