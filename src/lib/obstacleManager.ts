@@ -1,9 +1,9 @@
 import type Character from './character';
+import { LEVEL_REQS } from './data/game/constants';
 import { OBS_VARIATIONS } from './data/obstacles/data';
 import game from './game';
 import Obstacle from './obstacle';
 import { rand } from './utils/rand';
-import { CHAR_OFFSET_Y, LEVEL_REQS } from './_constants';
 
 class ObstacleManager {
   obstacles: Obstacle[] = [];
@@ -14,7 +14,7 @@ class ObstacleManager {
 
   constructor() {
     this.entryPoints = new Array(30).fill(0).map((_) => rand(350, 700));
-    console.log(this.entryPoints)
+    console.log(this.entryPoints);
   }
 
   removeObstacle(id: number) {
@@ -22,8 +22,8 @@ class ObstacleManager {
     this.cleared++;
 
     if (LEVEL_REQS[this.cleared]) {
-      console.log(`${this.cleared} cleared, move to level ${game.lvl + 1}`);
-      game.lvl++;
+      console.log('cleared for level');
+      game.upLevel();
     }
   }
 
@@ -31,28 +31,35 @@ class ObstacleManager {
     const collision = this.obstacles.find((obs) => obs.colides(character));
 
     if (collision) {
-      /* this.status = 'idle'; */
-      // console.log('dead!');
+      //game.pause();
     }
   }
 
   update() {
-    /* lower values = closer to exiting */
     const lastX = this.obstacles?.[this.obstacles.length - 1]?.x;
 
     if (lastX > this.entryPoints[this.entryPointInd]) {
       return;
     }
 
-    console.log(lastX);
+    if (this.entryPointInd < this.entryPoints.length - 1) {
+      this.entryPointInd++;
+    } else {
+      this.entryPointInd = 0;
+    }
 
-    this.entryPointInd++;
-    const randObs = OBS_VARIATIONS[0];
+    let obsInd = 0;
+
+    if (game.lvl > 2) {
+      obsInd = rand(0, 1);
+    }
+
+    const obs = OBS_VARIATIONS[obsInd];
 
     const config = {
+      ...obs,
       x: game.el.width,
-      y: game.el.height - randObs.height - CHAR_OFFSET_Y,
-      ...randObs
+      y: game.el.height - obs.y
     };
 
     new Obstacle(config).addToScene(this.obstacles);

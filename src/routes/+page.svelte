@@ -24,7 +24,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #f1f1f1;
+    background: #fafafa;
   }
   canvas {
     width: 1000px;

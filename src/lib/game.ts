@@ -12,6 +12,10 @@ class Game {
   character: Character;
   frame = 0;
   lvl = 1;
+  points = 0;
+  pointsCounter = 0;
+  announceLvlUp = false;
+  announceLvlUpCounter = 0;
 
   init(canvasEl: HTMLCanvasElement) {
     this.el = canvasEl;
@@ -25,11 +29,52 @@ class Game {
     this.scenery = new Scenery();
   }
 
+  upLevel() {
+    game.lvl++;
+    this.announceLvlUp = true;
+  }
+
+  updatePoints() {
+    if (this.pointsCounter === 8) {
+      this.points++;
+      this.pointsCounter = 0;
+    } else {
+      this.pointsCounter++;
+    }
+  }
+
+  announce() {
+    if (!this.announceLvlUp) return;
+
+    if (this.announceLvlUpCounter > 40) {
+      this.announceLvlUp = false;
+      this.announceLvlUpCounter = 0;
+    } else {
+      this.announceLvlUpCounter++;
+    }
+  }
+
+  renderPoints() {
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '20px monospace';
+
+    let lvlText = this.lvl.toString();
+
+    if (this.announceLvlUp) {
+      if (this.points % 2 === 0) lvlText = ' ';
+    }
+
+    this.ctx.fillText(`LVL ${lvlText} | ${this.points.toString().padStart(3, '0')}`, 40, 40);
+  }
+
   render() {
     this.ctx.clearRect(0, 0, 800, 600);
     this.frame++;
+    this.updatePoints();
+    this.announce();
 
     this.scenery.render();
+    this.renderPoints();
 
     obsManager.update();
     obsManager.detectCollisions(this.character);
