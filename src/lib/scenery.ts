@@ -4,9 +4,9 @@ import game from './game';
 import Repeater from './repeater';
 
 const color = {
-  green1: '#ACD09A',
-  green2: '#BEEA9B',
-  blue: '#3A9DD4'
+  green1: '#52c452',
+  green2: '#52c452',
+  blue: '#55b2fa'
 };
 
 export default class Scenery {

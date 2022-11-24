@@ -2,6 +2,7 @@ import { easeOutCirc } from './utils/ease';
 import Element, { type ElementConfig } from './element';
 import game from './game';
 import { JUMP_DURATION, JUMP_HEIGHT } from './data/character/constants';
+import { DEBUG_BOX } from './data/game/constants';
 
 class Character extends Element {
   state: 'idle' | 'running' | 'jump_asc' | 'jump_desc' | 'crouching' = 'idle';
@@ -21,10 +22,6 @@ class Character extends Element {
     this.attachListeners();
 
     return this;
-  }
-
-  addToScene() {
-    game.addCharacter(this);
   }
 
   attachListeners() {
@@ -116,11 +113,12 @@ class Character extends Element {
     this.update();
     this.manageSprite();
 
-    game.ctx.strokeStyle = 'rgb(200, 0, 0)';
-    //game.ctx.strokeRect(this.x, this.y, this.width, this.height);
-    //game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);
-    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x, this.y);
+    if (DEBUG_BOX) {
+      game.ctx.strokeStyle = 'rgb(0, 0, 0)';
+      game.ctx.strokeRect(this.x, this.y, this.width, this.height);
+    }
 
+    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x - 10, this.y);
   }
 }
 

@@ -1,6 +1,6 @@
 const GROUND_OBS_1 = {
-  width: 120,
-  height: 70,
+  width: 70,
+  height: 65,
   imgSrc: 'bike_1_sprite.png',
   btmp: [
     {
@@ -25,9 +25,9 @@ const GROUND_OBS_1 = {
 };
 
 const GROUND_OBS_2 = {
-  width: 120,
-  height: 70,
-  imgSrc: 'bike_2_sprite.png',
+  width: 70,
+  height: 65,
+  imgSrc: 'bike_1_sprite.png',
   btmp: [
     {
       sx: 0,

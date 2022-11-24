@@ -1,6 +1,8 @@
+import { DEBUG_BOX } from './data/game/constants';
 import { OBS_SPEED } from './data/obstacles/constants';
 import Element, { type ElementConfig } from './element';
 import game from './game';
+import obsManager from './obstacleManager';
 
 class Obstacle extends Element {
   enabled = true;
@@ -18,7 +20,7 @@ class Obstacle extends Element {
 
     if (this.x + this.width < 0) {
       this.enabled = false;
-      game.removeObstacle(this.id);
+      obsManager.removeObstacle(this.id);
     }
   }
 
@@ -30,9 +32,12 @@ class Obstacle extends Element {
     this.manageSprite();
     this.update();
 
-    //game.ctx.strokeStyle = 'rgb(0, 0, 200)';
-    //    game.ctx.strokeRect(this.x, this.y, this.width, this.height);
-    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x, this.y);
+    if (DEBUG_BOX) {
+      game.ctx.strokeStyle = 'rgb(0, 0, 0)';
+      game.ctx.strokeRect(this.x, this.y, this.width, this.height);
+    }
+
+    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x - 20, this.y);
   }
 }
 
