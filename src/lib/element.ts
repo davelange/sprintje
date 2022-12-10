@@ -27,7 +27,7 @@ class Element {
     this.y = config.y;
 
     if (config.imgSrc) {
-      this.img = new Image();
+      this.img = new Image();      
       this.img.src = `img/${config.imgSrc}`;
 
       this.img.onload = async (evt) => {

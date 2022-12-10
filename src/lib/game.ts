@@ -1,21 +1,14 @@
-import Announcer from './announcer';
-import Character from './character';
-import { CHAR_HEIGHT, CHAR_OFFSET_Y } from './data/character/constants';
-import { CHAR } from './data/character/data';
-import obsManager from './obstacleManager';
-import Scenery from './scenery';
+import { announcer, character, obstacleManager, scenery } from './index';
 
 export type SubUpdate = {
   event: string;
 };
 
 class Game {
-  status: 'running' | 'idle' | 'crash' = 'idle';
-  scenery: Scenery;
   el: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  character: Character;
-  announcer: Announcer;
+
+  status: 'running' | 'idle' | 'crash' = 'idle';
   frame = 0;
   lvl = 1;
   points = 0;
@@ -28,12 +21,7 @@ class Game {
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.font = '20px monospace';
 
-    this.character = new Character({
-      ...CHAR,
-      y: this.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y
-    });
-    this.scenery = new Scenery();
-    this.announcer = new Announcer();
+    this.update('INIT');
   }
 
   subscribe(fn: any) {
@@ -65,18 +53,16 @@ class Game {
 
   render() {
     this.frame++;
-    this.announcer.render();
 
     if (this.status === 'running') {
       this.updatePoints();
-      this.scenery.render();
 
-      obsManager.update();
-      obsManager.detectCollisions(this.character);
-      obsManager.render();
-
-      this.character.render();
+      scenery.render();
+      obstacleManager.render();
+      character.render();
     }
+
+    announcer.render();
 
     requestAnimationFrame(this.render.bind(this));
   }
@@ -91,7 +77,7 @@ class Game {
     }
 
     this.status = 'running';
-    this.character.state = 'running';
+    this.update('PLAY');
     this.loop();
   }
 
@@ -104,12 +90,10 @@ class Game {
     this.points = 0;
     this.pointsCounter = 0;
     this.lvl = 0;
-    obsManager.restart();
+    obstacleManager.restart();
     this.status = 'running';
     this.loop();
   }
 }
 
-const game = new Game();
-
-export default game;
+export default Game;

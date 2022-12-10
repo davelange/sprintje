@@ -1,11 +1,11 @@
-import game, { type SubUpdate } from './game';
+import { game } from './index';
+import type { SubUpdate } from './game';
 
 export default class Announcer {
   announceLvlUp = false;
   announceLvlUpCounter = 0;
 
   constructor() {
-    game.ctx.fillStyle = 'white';
     game.subscribe(this.onUpdate.bind(this));
   }
 
@@ -27,6 +27,7 @@ export default class Announcer {
   }
 
   renderPoints() {
+    game.ctx.fillStyle = 'white';
     let lvlText = game.lvl.toString();
 
     if (this.announceLvlUp) {

@@ -4,4 +4,4 @@ export const LEVEL_REQS: Record<number, number> = {
   20: 3,
   40: 4
 };
-export const DEBUG_BOX = false;
+export const DEBUG_BOX = true;

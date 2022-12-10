@@ -1,4 +1,4 @@
-import game from './game';
+import { game } from './index';
 import Element, { type ElementConfig } from './element';
 import { OBS_SPEED } from './data/obstacles/constants';
 

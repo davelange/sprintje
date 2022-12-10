@@ -1,7 +1,8 @@
 import { easeOutCirc } from './utils/ease';
 import Element, { type ElementConfig } from './element';
-import game from './game';
-import { JUMP_DURATION, JUMP_HEIGHT } from './data/character/constants';
+import type { SubUpdate } from './game';
+import { game } from './index';
+import { CHAR_HEIGHT, CHAR_OFFSET_Y, JUMP_DURATION, JUMP_HEIGHT } from './data/character/constants';
 import { DEBUG_BOX } from './data/game/constants';
 
 class Character extends Element {
@@ -20,8 +21,22 @@ class Character extends Element {
 
     this.initial = { x: this.x, y: this.y, height: this.height };
     this.attachListeners();
+    game.subscribe(this.onUpdate.bind(this));
 
     return this;
+  }
+
+  onUpdate(data: SubUpdate) {
+    switch (data.event) {
+      case 'PLAY':
+        this.state = 'running';
+        break;
+
+      case 'INIT':
+        this.y = game.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y;
+        this.initial.y = this.y;
+        break;
+    }
   }
 
   attachListeners() {

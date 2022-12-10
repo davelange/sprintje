@@ -1,13 +1,20 @@
 import { COLOR_GROUND, COLOR_SKY, GROUND_Y_OFFSET } from './data/scenery/constants';
 import { CLOUDS, GRASS, SKYS } from './data/scenery/data';
-import game from './game';
+import type { SubUpdate } from './game';
+import { game } from './index';
 import Repeater from './repeater';
 
 export default class Scenery {
   elements: Repeater[] = [];
 
   constructor() {
-    this.addRepeaterEls();
+    game.subscribe(this.onUpdate.bind(this));
+  }
+
+  onUpdate(data: SubUpdate) {
+    if (data.event === 'INIT') {
+      this.addRepeaterEls();
+    }
   }
 
   addRepeaterEls() {

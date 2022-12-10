@@ -1,8 +1,7 @@
 import { DEBUG_BOX } from './data/game/constants';
 import { OBS_SPEED } from './data/obstacles/constants';
 import Element, { type ElementConfig } from './element';
-import game from './game';
-import obsManager from './obstacleManager';
+import { game, obstacleManager } from './index';
 
 class Obstacle extends Element {
   enabled = true;
@@ -20,7 +19,7 @@ class Obstacle extends Element {
 
     if (this.x + this.width < 0) {
       this.enabled = false;
-      obsManager.removeObstacle(this.id);
+      obstacleManager.removeObstacle(this.id);
     }
   }
 

@@ -1,7 +1,7 @@
 import type Character from './character';
 import { LEVEL_REQS } from './data/game/constants';
 import { OBS_VARIATIONS } from './data/obstacles/data';
-import game from './game';
+import { character, game } from './index';
 import Obstacle from './obstacle';
 import { rand } from './utils/rand';
 
@@ -68,11 +68,11 @@ class ObstacleManager {
     this.cleared = 0;
   }
 
-  render() {    
+  render() {
+    this.update();
+    this.detectCollisions(character);
     this.obstacles.forEach((el) => el.render());
   }
 }
 
-const obsManager = new ObstacleManager();
-
-export default obsManager;
+export default ObstacleManager;
