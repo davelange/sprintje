@@ -14,7 +14,6 @@ class ObstacleManager {
 
   constructor() {
     this.entryPoints = new Array(30).fill(0).map((_) => rand(350, 700));
-    console.log(this.entryPoints);
   }
 
   removeObstacle(id: number) {
@@ -22,7 +21,6 @@ class ObstacleManager {
     this.cleared++;
 
     if (LEVEL_REQS[this.cleared]) {
-      console.log('cleared for level');
       game.upLevel();
     }
   }
@@ -31,7 +29,7 @@ class ObstacleManager {
     const collision = this.obstacles.find((obs) => obs.colides(character));
 
     if (collision) {
-      //game.pause();
+      game.crash();
     }
   }
 
@@ -65,7 +63,12 @@ class ObstacleManager {
     new Obstacle(config).addToScene(this.obstacles);
   }
 
-  render() {
+  restart() {
+    this.obstacles = [];
+    this.cleared = 0;
+  }
+
+  render() {    
     this.obstacles.forEach((el) => el.render());
   }
 }

@@ -13,13 +13,13 @@ export default class Scenery {
   addRepeaterEls() {
     SKYS.map((c) => new Repeater({ ...c, width: game.el.width }).addToScene(this.elements));
     CLOUDS.map((c) => new Repeater(c).addToScene(this.elements));
-    /* GRASS.map((c, ind) =>
+    GRASS.map((c, ind) =>
       new Repeater({
         ...c,
         x: ind * c.width,
         y: game.el.height - GROUND_Y_OFFSET + 30
       }).addToScene(this.elements)
-    ); */
+    );
   }
 
   renderGround() {

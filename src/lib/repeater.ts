@@ -37,8 +37,6 @@ class Repeater extends Element {
       this.update();
     }
 
-    /* game.ctx.strokeStyle = 'rgb(200, 0, 0)';
-    game.ctx.strokeRect(this.x, this.y, this.width, this.height); */
     game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);
   }
 }

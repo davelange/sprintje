@@ -118,7 +118,7 @@ class Character extends Element {
       game.ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
 
-    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x - 10, this.y);
+    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x - 10, this.y - 10);
   }
 }
 

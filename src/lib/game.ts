@@ -1,37 +1,57 @@
+import Announcer from './announcer';
 import Character from './character';
 import { CHAR_HEIGHT, CHAR_OFFSET_Y } from './data/character/constants';
 import { CHAR } from './data/character/data';
 import obsManager from './obstacleManager';
 import Scenery from './scenery';
 
+export type SubUpdate = {
+  event: string;
+};
+
 class Game {
-  status: 'running' | 'idle' = 'idle';
+  status: 'running' | 'idle' | 'crash' = 'idle';
   scenery: Scenery;
   el: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   character: Character;
+  announcer: Announcer;
   frame = 0;
   lvl = 1;
   points = 0;
   pointsCounter = 0;
-  announceLvlUp = false;
-  announceLvlUpCounter = 0;
+  subs: ((a: SubUpdate) => void)[] = [];
 
   init(canvasEl: HTMLCanvasElement) {
     this.el = canvasEl;
     this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
     this.ctx.imageSmoothingEnabled = false;
+    this.ctx.font = '20px monospace';
 
     this.character = new Character({
       ...CHAR,
       y: this.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y
     });
     this.scenery = new Scenery();
+    this.announcer = new Announcer();
+  }
+
+  subscribe(fn: any) {
+    this.subs.push(fn);
+  }
+
+  update(event: string) {
+    this.subs?.forEach((cb) => cb({ event }));
   }
 
   upLevel() {
-    game.lvl++;
-    this.announceLvlUp = true;
+    this.lvl++;
+    this.update('UP_LEVEL');
+  }
+
+  crash() {
+    this.status = 'crash';
+    this.update('CRASH');
   }
 
   updatePoints() {
@@ -43,48 +63,22 @@ class Game {
     }
   }
 
-  announce() {
-    if (!this.announceLvlUp) return;
-
-    if (this.announceLvlUpCounter > 40) {
-      this.announceLvlUp = false;
-      this.announceLvlUpCounter = 0;
-    } else {
-      this.announceLvlUpCounter++;
-    }
-  }
-
-  renderPoints() {
-    this.ctx.fillStyle = 'white';
-    this.ctx.font = '20px monospace';
-
-    let lvlText = this.lvl.toString();
-
-    if (this.announceLvlUp) {
-      if (this.points % 2 === 0) lvlText = ' ';
-    }
-
-    this.ctx.fillText(`LVL ${lvlText} | ${this.points.toString().padStart(3, '0')}`, 40, 40);
-  }
-
   render() {
-    this.ctx.clearRect(0, 0, 800, 600);
     this.frame++;
-    this.updatePoints();
-    this.announce();
-
-    this.scenery.render();
-    this.renderPoints();
-
-    obsManager.update();
-    obsManager.detectCollisions(this.character);
-    obsManager.render();
-
-    this.character.render();
+    this.announcer.render();
 
     if (this.status === 'running') {
-      requestAnimationFrame(this.render.bind(this));
+      this.updatePoints();
+      this.scenery.render();
+
+      obsManager.update();
+      obsManager.detectCollisions(this.character);
+      obsManager.render();
+
+      this.character.render();
     }
+
+    requestAnimationFrame(this.render.bind(this));
   }
 
   loop() {
@@ -103,6 +97,16 @@ class Game {
 
   pause() {
     this.status = 'idle';
+  }
+
+  restart() {
+    this.frame = 0;
+    this.points = 0;
+    this.pointsCounter = 0;
+    this.lvl = 0;
+    obsManager.restart();
+    this.status = 'running';
+    this.loop();
   }
 }
 

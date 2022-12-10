@@ -14,6 +14,7 @@
   <div class="controls">
     <button on:click={() => game.play()}>play</button>
     <button on:click={() => game.pause()}>pause</button>
+    <button on:click={() => game.restart()}>restart</button>
   </div>
 </section>
 
@@ -28,6 +29,7 @@
   }
   canvas {
     width: 1000px;
+    max-width: 100vw;
     aspect-ratio: 2.6 / 1;
     margin: auto;
   }
