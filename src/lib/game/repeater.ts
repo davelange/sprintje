@@ -1,6 +1,7 @@
 import { game } from './index';
 import Element, { type ElementConfig } from './element';
 import { OBS_SPEED } from './data/obstacles/constants';
+import type { SubUpdate } from './game';
 
 interface RepeaterConfig extends ElementConfig {
   speedModifier: number;
@@ -18,6 +19,14 @@ class Repeater extends Element {
     this.speedModifier = config.speedModifier;
     this.static = config?.static || false;
     this.offscreenDistance = config.x + config.width;
+
+    game.subscribe(this.onUpdate.bind(this));
+  }
+
+  onUpdate(data: SubUpdate) {
+    /* if (data.event === 'RESTART') {      
+      this.x = 0;
+    } */
   }
 
   update() {
@@ -30,6 +39,7 @@ class Repeater extends Element {
 
   render() {
     if (!this.imgReady) {
+      console.log("not ready")
       return;
     }
 

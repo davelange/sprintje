@@ -12,8 +12,15 @@ export default class Scenery {
   }
 
   onUpdate(data: SubUpdate) {
-    if (data.event === 'INIT') {
-      this.addRepeaterEls();
+    switch (data.event) {
+      case 'INIT':
+        this.addRepeaterEls();
+        break;
+
+      case 'RESTART':
+        this.elements = [];
+        this.addRepeaterEls();
+        break;
     }
   }
 

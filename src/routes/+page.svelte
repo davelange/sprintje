@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { game } from '$lib/game';
+  import { game, obstacleManager } from '$lib/game';
+  import challenge from '$lib/game/stores/challenge';
   import { onMount } from 'svelte';
 
   let canvasEl: HTMLCanvasElement;
@@ -7,14 +8,46 @@
   onMount(() => {
     game.init(canvasEl);
   });
+
+  function handleClick(i: number) {
+    if (i === $challenge.answer) {
+      $challenge.active = false;
+      obstacleManager.skipFirst();
+      game.play();
+    } else {
+      $challenge.failed = true;
+    }
+  }
+
+  function handleRestart() {
+    game.restart();
+    $challenge.active = false;
+  }
 </script>
 
 <section class="wrapper">
   <canvas bind:this={canvasEl} width="1000px" height="386px" />
+
+  {#if $challenge.active}
+    <div class="challenge">
+      {#if $challenge.failed}
+        <p>you failed</p>
+        <button on:click={handleRestart}>try again</button>
+      {:else}
+        <p>What does {$challenge.word} mean?</p>
+
+        {#each $challenge.options as option, i}
+          <button on:click={() => handleClick(i)}>
+            {option}
+          </button>
+        {/each}
+      {/if}
+    </div>
+  {/if}
+
   <div class="controls">
     <button on:click={() => game.play()}>play</button>
     <button on:click={() => game.pause()}>pause</button>
-    <button on:click={() => game.restart()}>restart</button>
   </div>
 </section>
 
@@ -35,5 +68,8 @@
   }
   .controls {
     margin-top: 20px;
+  }
+  .challenge {
+    position: absolute;
   }
 </style>

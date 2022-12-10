@@ -28,6 +28,7 @@ export default class Announcer {
 
   renderPoints() {
     game.ctx.fillStyle = 'white';
+    game.ctx.textAlign = 'left';
     let lvlText = game.lvl.toString();
 
     if (this.announceLvlUp) {
@@ -37,28 +38,8 @@ export default class Announcer {
     game.ctx.fillText(`LVL ${lvlText} | ${game.points.toString().padStart(3, '0')}`, 40, 40);
   }
 
-  renderChrash() {
-    game.ctx.textAlign = 'center';
-    game.ctx.fillStyle = 'yellow';
-
-    const text = `Oh dear, you crashed!`;
-
-    game.ctx.fillText(text, game.el.width / 2, game.el.height / 2);
-  }
-
   render() {
     this.update();
-
-    if (game.status === 'crash') {
-      this.renderChrash();
-
-      return;
-    }
-
-    if (game.status === 'running') {
-      this.renderPoints();
-
-      return;
-    }
+    this.renderPoints();
   }
 }

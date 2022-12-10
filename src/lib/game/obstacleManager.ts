@@ -1,6 +1,7 @@
 import type Character from './character';
 import { LEVEL_REQS } from './data/game/constants';
 import { OBS_VARIATIONS } from './data/obstacles/data';
+import type { SubUpdate } from './game';
 import { character, game } from './index';
 import Obstacle from './obstacle';
 import { rand } from './utils/rand';
@@ -16,6 +17,14 @@ class ObstacleManager {
     this.entryPoints = new Array(30).fill(0).map(() => rand(350, 700));
   }
 
+  onUpdate(data: SubUpdate) {
+    switch (data.event) {
+      case 'RESTART':
+        this.obstacles = [];
+        this.cleared = 0;
+    }
+  }
+
   removeObstacle(id: number) {
     this.obstacles = this.obstacles.filter((obs) => obs.id !== id);
     this.cleared++;
@@ -23,6 +32,10 @@ class ObstacleManager {
     if (LEVEL_REQS[this.cleared]) {
       game.upLevel();
     }
+  }
+
+  skipFirst() {
+    this.obstacles.shift();
   }
 
   detectCollisions(character: Character) {
@@ -61,11 +74,6 @@ class ObstacleManager {
     };
 
     new Obstacle(config).addToScene(this.obstacles);
-  }
-
-  restart() {
-    this.obstacles = [];
-    this.cleared = 0;
   }
 
   render() {

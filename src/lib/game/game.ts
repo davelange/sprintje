@@ -8,7 +8,7 @@ class Game {
   el: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
-  status: 'running' | 'idle' | 'crash' = 'idle';
+  status: 'idle' | 'running' | 'crash' | 'game_over' = 'idle';
   frame = 0;
   lvl = 1;
   points = 0;
@@ -21,25 +21,27 @@ class Game {
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.font = '20px monospace';
 
-    this.update('INIT');
+    this.publish('INIT');
+    setTimeout(() => this.loop(), 100);
   }
 
   subscribe(fn: (data: SubUpdate) => void) {
     this.subs.push(fn);
   }
 
-  update(event: string) {
+  publish(event: string) {
+    console.log(event);
     this.subs?.forEach((cb) => cb({ event }));
   }
 
   upLevel() {
     this.lvl++;
-    this.update('UP_LEVEL');
+    this.publish('UP_LEVEL');
   }
 
   crash() {
     this.status = 'crash';
-    this.update('CRASH');
+    this.publish('CRASH');
   }
 
   updatePoints() {
@@ -52,19 +54,21 @@ class Game {
   }
 
   render() {
-    this.frame++;
-
     if (this.status === 'running') {
+      this.frame++;
       this.updatePoints();
 
       scenery.render();
       obstacleManager.render();
       character.render();
+      announcer.render();
+
+      requestAnimationFrame(this.render.bind(this));
     }
 
-    announcer.render();
-
-    requestAnimationFrame(this.render.bind(this));
+    if (this.status === 'idle') {
+      scenery.render();
+    }
   }
 
   loop() {
@@ -77,22 +81,30 @@ class Game {
     }
 
     this.status = 'running';
-    this.update('PLAY');
+    this.publish('PLAY');
     this.loop();
   }
 
   pause() {
     this.status = 'idle';
+    this.publish('PAUSE');
+  }
+
+  die() {
+    this.status = 'game_over';
+    this.publish('GAME_OVER');
   }
 
   restart() {
     this.frame = 0;
     this.points = 0;
     this.pointsCounter = 0;
-    this.lvl = 0;
-    obstacleManager.restart();
-    this.status = 'running';
-    this.loop();
+    this.lvl = 1;
+    this.status = 'idle';
+
+    this.publish('RESTART');
+
+    setTimeout(() => this.loop(), 100);
   }
 }
 
