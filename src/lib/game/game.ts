@@ -24,7 +24,7 @@ class Game {
     this.update('INIT');
   }
 
-  subscribe(fn: any) {
+  subscribe(fn: (data: SubUpdate) => void) {
     this.subs.push(fn);
   }
 

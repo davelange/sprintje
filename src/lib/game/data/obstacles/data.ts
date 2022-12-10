@@ -1,4 +1,4 @@
-import { CHAR_OFFSET_Y } from '$lib/_constants';
+import { CHAR_OFFSET_Y } from '../character/constants';
 
 const GROUND_OBS_1 = {
   width: 70,

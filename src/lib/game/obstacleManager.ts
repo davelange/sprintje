@@ -13,7 +13,7 @@ class ObstacleManager {
   log: number[] = [];
 
   constructor() {
-    this.entryPoints = new Array(30).fill(0).map((_) => rand(350, 700));
+    this.entryPoints = new Array(30).fill(0).map(() => rand(350, 700));
   }
 
   removeObstacle(id: number) {

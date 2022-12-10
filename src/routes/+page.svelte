@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { game } from '$lib';
+  import { game } from '$lib/game';
   import { onMount } from 'svelte';
 
   let canvasEl: HTMLCanvasElement;
