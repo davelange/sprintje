@@ -22,6 +22,7 @@ class Game {
     this.ctx.font = '20px monospace';
 
     this.publish('INIT');
+
     setTimeout(() => this.loop(), 100);
   }
 
@@ -93,6 +94,12 @@ class Game {
   die() {
     this.status = 'game_over';
     this.publish('GAME_OVER');
+  }
+
+  revive() {
+    this.status = 'running';
+    this.publish('REVIVE');
+    this.loop();
   }
 
   restart() {

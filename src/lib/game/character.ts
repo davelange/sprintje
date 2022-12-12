@@ -36,6 +36,12 @@ class Character extends Element {
         this.y = game.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y;
         this.initial.y = this.y;
         break;
+
+      case 'RESTART':
+        this.y = game.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y;
+        this.initial.y = this.y;
+        this.state = 'running';
+        break;
     }
   }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { game, obstacleManager } from '$lib/game';
-  import challenge from '$lib/game/stores/challenge';
+  import { game } from '$lib/game';
+  import challenge from '$lib/stores/challenge';
   import { onMount } from 'svelte';
 
   let canvasEl: HTMLCanvasElement;
@@ -9,11 +9,10 @@
     game.init(canvasEl);
   });
 
-  function handleClick(i: number) {
-    if (i === $challenge.answer) {
+  function handleClick(opt: string) {
+    if (opt === $challenge.answer) {
       $challenge.active = false;
-      obstacleManager.skipFirst();
-      game.play();
+      game.revive();
     } else {
       $challenge.failed = true;
     }
@@ -36,9 +35,10 @@
       {:else}
         <p>What does {$challenge.word} mean?</p>
 
-        {#each $challenge.options as option, i}
-          <button on:click={() => handleClick(i)}>
+        {#each $challenge.opts as option, i}
+          <button on:click={() => handleClick(option)}>
             {option}
+            {option === $challenge.answer ? 'X' : ''}
           </button>
         {/each}
       {/if}

@@ -15,13 +15,21 @@ class ObstacleManager {
 
   constructor() {
     this.entryPoints = new Array(30).fill(0).map(() => rand(350, 700));
+
+    game.subscribe(this.onUpdate.bind(this));
   }
 
   onUpdate(data: SubUpdate) {
     switch (data.event) {
       case 'RESTART':
+      case 'INIT':
         this.obstacles = [];
         this.cleared = 0;
+        break;
+
+      case 'REVIVE':
+        this.skipFirst();
+        break;
     }
   }
 
