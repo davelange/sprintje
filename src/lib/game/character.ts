@@ -4,22 +4,28 @@ import type { SubUpdate } from './game';
 import { game } from './index';
 import { CHAR_HEIGHT, CHAR_OFFSET_Y, JUMP_DURATION, JUMP_HEIGHT } from './data/character/constants';
 import { DEBUG_BOX } from './data/game/constants';
+import isMobile from './utils/isMobile';
 
 class Character extends Element {
-  state: 'idle' | 'running' | 'jump_asc' | 'jump_desc' | 'crouching' = 'idle';
+  state: 'idle' | 'running' | 'jump_asc' | 'jump_desc' | 'crouch_asc' | 'crouch_desc' = 'idle';
   initial = {
     x: 0,
     y: 0,
     height: 0
   };
-  jumpProgress = 0;
+  motionDuration = 0;
+  motionProgress = 0;
   easeAcc = 0;
-  jumpPoints: number[] = [];
+  motionPoints = {
+    jump: [] as number[],
+    crouch: [] as number[]
+  };
 
   constructor(config: ElementConfig) {
     super(config);
 
     this.initial = { x: this.x, y: this.y, height: this.height };
+    this.motionDuration = JUMP_DURATION[isMobile() ? 'mobile' : 'desktop'];
     this.attachListeners();
     game.subscribe(this.onUpdate.bind(this));
 
@@ -47,81 +53,87 @@ class Character extends Element {
 
   attachListeners() {
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
-    document.addEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   handleKeyDown(evt: KeyboardEvent) {
     switch (evt.code) {
       case 'ArrowUp':
-        if (this.state === 'running') {
-          this.state = 'jump_asc';
-        }
+        this.jump();
         break;
 
       case 'ArrowDown':
-        if (this.state === 'running') {
-          this.startCrouching();
-        }
+        this.crouch();
         break;
     }
   }
 
-  handleKeyUp(evt: KeyboardEvent) {
-    switch (evt.code) {
-      case 'ArrowDown': {
-        this.endCrouching();
-      }
-    }
+  jump() {
+    this.state = 'jump_asc';
   }
 
-  startCrouching() {
-    this.state = 'crouching';
-    this.height = this.initial.height / 2;
-    this.y += this.initial.height / 2;
+  crouch() {
+    this.state = 'crouch_asc';
   }
 
-  endCrouching() {
-    this.state = 'running';
-    this.height = this.initial.height;
-    this.y = this.initial.y;
-  }
-
-  calcJumpMotion() {
-    const progressDecimal = (this.jumpProgress * 100) / JUMP_DURATION / 100;
+  calcEasedMotion(motion: 'jump' | 'crouch') {
+    const progressDecimal = (this.motionProgress * 100) / this.motionDuration / 100;
     const easedVal = easeOutCirc(progressDecimal);
     const frameEase = easedVal - this.easeAcc;
-    const point = this.y - frameEase * JUMP_HEIGHT;
+
+    let point = 0;
+
+    if (motion === 'crouch') {
+      point = this.y + frameEase * JUMP_HEIGHT;
+    } else if (motion === 'jump') {
+      point = this.y - frameEase * JUMP_HEIGHT;
+    }
 
     this.y = point;
     this.easeAcc += frameEase;
-    this.jumpPoints.push(point);
+    this.motionPoints[motion].push(point);
+  }
+
+  jumpOrCrouchAsc(motion: 'jump' | 'crouch') {
+    if (this.motionProgress < this.motionDuration) {
+      if (this.motionPoints[motion].length < this.motionDuration) {
+        this.calcEasedMotion(motion);
+      } else {
+        this.y = this.motionPoints[motion][this.motionProgress];
+      }
+
+      this.motionProgress++;
+    } else {
+      this.state = motion === 'jump' ? 'jump_desc' : 'crouch_desc';
+      this.easeAcc = 0;
+    }
+  }
+
+  jumpOrCrouchDesc(motion: 'jump' | 'crouch') {
+    if (this.motionProgress > 0) {
+      this.motionProgress--;
+      this.y = this.motionPoints[motion][this.motionProgress];
+    } else {
+      this.state = 'running';
+      this.y = this.initial.y;
+    }
   }
 
   update() {
     switch (this.state) {
       case 'jump_asc':
-        if (this.jumpProgress < JUMP_DURATION) {
-          if (this.jumpPoints.length < JUMP_DURATION) {
-            this.calcJumpMotion();
-          } else {
-            this.y = this.jumpPoints[this.jumpProgress];
-          }
-
-          this.jumpProgress++;
-        } else {
-          this.state = 'jump_desc';
-          this.easeAcc = 0;
-        }
+        this.jumpOrCrouchAsc('jump');
         break;
 
       case 'jump_desc':
-        if (this.jumpProgress > 0) {
-          this.jumpProgress--;
-          this.y = this.jumpPoints[this.jumpProgress];
-        } else {
-          this.state = 'running';
-          this.y = this.initial.y;
-        }
+        this.jumpOrCrouchDesc('jump');
+        break;
+
+      case 'crouch_asc':
+        this.jumpOrCrouchAsc('crouch');
+        break;
+
+      case 'crouch_desc':
+        this.jumpOrCrouchDesc('crouch');
         break;
     }
   }

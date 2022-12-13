@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { game } from '$lib/game';
+  import { character, game } from '$lib/game';
   import challenge from '$lib/stores/challenge';
   import { onMount } from 'svelte';
 
@@ -25,7 +25,7 @@
 </script>
 
 <section class="wrapper">
-  <canvas bind:this={canvasEl} width="1000px" height="386px" />
+  <canvas bind:this={canvasEl} />
 
   {#if $challenge.active}
     <div class="challenge">
@@ -48,6 +48,7 @@
   <div class="controls">
     <button on:click={() => game.play()}>play</button>
     <button on:click={() => game.pause()}>pause</button>
+    <button on:pointerdown={() => character.jump()}>jump</button>
   </div>
 </section>
 
@@ -63,7 +64,6 @@
   canvas {
     width: 1000px;
     max-width: 100vw;
-    aspect-ratio: 2.6 / 1;
     margin: auto;
   }
   .controls {

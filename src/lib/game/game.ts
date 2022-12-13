@@ -1,4 +1,6 @@
+import { CANVAS_SIZE } from './data/game/constants';
 import { announcer, character, obstacleManager, scenery } from './index';
+import isMobile from './utils/isMobile';
 
 export type SubUpdate = {
   event: string;
@@ -8,7 +10,7 @@ class Game {
   el: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
-  status: 'idle' | 'running' | 'crash' | 'game_over' = 'idle';
+  status: 'idle' | 'pause' | 'running' | 'crash' | 'game_over' = 'idle';
   frame = 0;
   lvl = 1;
   points = 0;
@@ -16,14 +18,23 @@ class Game {
   subs: ((a: SubUpdate) => void)[] = [];
 
   init(canvasEl: HTMLCanvasElement) {
-    this.el = canvasEl;
-    this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
-    this.ctx.imageSmoothingEnabled = false;
-    this.ctx.font = '20px monospace';
+    this.setupCanvas(canvasEl);
 
     this.publish('INIT');
 
     setTimeout(() => this.loop(), 100);
+  }
+
+  setupCanvas(canvasEl: HTMLCanvasElement) {
+    this.el = canvasEl;
+
+    const device = isMobile() ? 'mobile' : 'desktop';
+    const size = CANVAS_SIZE[device];
+    this.el.width = size.width;
+    this.el.height = size.height;
+    this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.font = '20px monospace';
   }
 
   subscribe(fn: (data: SubUpdate) => void) {
@@ -55,20 +66,19 @@ class Game {
   }
 
   render() {
+    scenery.render();
+
+    if (this.status !== 'idle') {
+      obstacleManager.render();
+      character.render();
+      announcer.render();
+    }
+
     if (this.status === 'running') {
       this.frame++;
       this.updatePoints();
 
-      scenery.render();
-      obstacleManager.render();
-      character.render();
-      announcer.render();
-
       requestAnimationFrame(this.render.bind(this));
-    }
-
-    if (this.status === 'idle') {
-      scenery.render();
     }
   }
 
@@ -77,7 +87,7 @@ class Game {
   }
 
   play() {
-    if (this.status === 'running') {
+    if (['running', 'crash', 'game_over'].includes(this.status)) {
       return;
     }
 
@@ -87,7 +97,7 @@ class Game {
   }
 
   pause() {
-    this.status = 'idle';
+    this.status = 'pause';
     this.publish('PAUSE');
   }
 

@@ -4,6 +4,7 @@ import { OBS_VARIATIONS } from './data/obstacles/data';
 import type { SubUpdate } from './game';
 import { character, game } from './index';
 import Obstacle from './obstacle';
+import isMobile from './utils/isMobile';
 import { rand } from './utils/rand';
 
 class ObstacleManager {
@@ -11,10 +12,11 @@ class ObstacleManager {
   entryPoints: number[] = [];
   entryPointInd = 0;
   cleared = 0;
-  log: number[] = [];
+  previous: 'ground' | 'air' = 'ground';
 
   constructor() {
-    this.entryPoints = new Array(30).fill(0).map(() => rand(350, 700));
+    const validRange = isMobile() ? [100, 500] : [350, 700];
+    this.entryPoints = new Array(30).fill(0).map(() => rand(validRange[0], validRange[1]));
 
     game.subscribe(this.onUpdate.bind(this));
   }
@@ -49,9 +51,9 @@ class ObstacleManager {
   detectCollisions(character: Character) {
     const collision = this.obstacles.find((obs) => obs.colides(character));
 
-    if (collision) {
+    /* if (collision) {
       game.crash();
-    }
+    } */
   }
 
   update() {
@@ -67,13 +69,14 @@ class ObstacleManager {
       this.entryPointInd = 0;
     }
 
-    let obsInd = 0;
+    let obsType = 0;
 
-    if (game.lvl > 2) {
-      obsInd = rand(0, 1);
+    if (this.previous !== 'air' && game.lvl > 2) {
+      obsType = rand(0, 1);
+      if (obsType) this.previous = 'air';
     }
 
-    const obs = OBS_VARIATIONS[obsInd];
+    const obs = OBS_VARIATIONS[obsType];
 
     const config = {
       ...obs,
