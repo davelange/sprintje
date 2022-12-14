@@ -51,9 +51,9 @@ class ObstacleManager {
   detectCollisions(character: Character) {
     const collision = this.obstacles.find((obs) => obs.colides(character));
 
-    /* if (collision) {
+    if (collision) {
       game.crash();
-    } */
+    }
   }
 
   update() {

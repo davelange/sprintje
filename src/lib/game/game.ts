@@ -32,7 +32,7 @@ class Game {
     const size = CANVAS_SIZE[device];
     this.el.width = size.width;
     this.el.height = size.height;
-    this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;    
+    this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
     this.ctx.font = '20px monospace';
   }
 
@@ -66,10 +66,10 @@ class Game {
 
   render() {
     scenery.render();
+    character.render();
 
     if (this.status !== 'idle') {
       obstacleManager.render();
-      character.render();
       announcer.render();
     }
 
@@ -116,9 +116,11 @@ class Game {
     this.points = 0;
     this.pointsCounter = 0;
     this.lvl = 1;
-    this.status = 'idle';
 
     this.publish('RESTART');
+    this.publish('PLAY');
+
+    this.status = 'running';
 
     setTimeout(() => this.loop(), 100);
   }

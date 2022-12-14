@@ -2,12 +2,19 @@ import { easeOutCirc } from './utils/ease';
 import Element, { type ElementConfig } from './element';
 import type { SubUpdate } from './game';
 import { game } from './index';
-import { CHAR_HEIGHT, CHAR_OFFSET_Y, JUMP_DURATION, JUMP_HEIGHT } from './data/character/constants';
+import {
+  CHAR_HEIGHT,
+  CHAR_OFFSET_X,
+  CHAR_OFFSET_Y,
+  JUMP_DURATION,
+  JUMP_HEIGHT
+} from './data/character/constants';
 import { DEBUG_BOX } from './data/game/constants';
 import isMobile from './utils/isMobile';
 
 class Character extends Element {
-  state: 'idle' | 'running' | 'jump_asc' | 'jump_desc' | 'crouch_asc' | 'crouch_desc' = 'idle';
+  state: 'intro' | 'idle' | 'running' | 'jump_asc' | 'jump_desc' | 'crouch_asc' | 'crouch_desc' =
+    'idle';
   initial = {
     x: 0,
     y: 0,
@@ -35,10 +42,11 @@ class Character extends Element {
   onUpdate(data: SubUpdate) {
     switch (data.event) {
       case 'PLAY':
-        this.state = 'running';
+        this.state = 'intro';
         break;
 
       case 'INIT':
+        this.x = game.el.width / 2 - this.width;
         this.y = game.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y;
         this.initial.y = this.y;
         break;
@@ -124,6 +132,15 @@ class Character extends Element {
 
   update() {
     switch (this.state) {
+      case 'intro':
+        this.x -= 4;
+
+        if (this.x < CHAR_OFFSET_X) {
+          this.state = 'running';
+        }
+
+        break;
+
       case 'jump_asc':
         this.jumpOrCrouchAsc('jump');
         break;
