@@ -16,6 +16,22 @@ const SKY_2 = {
   speedModifier: -4.4
 };
 
+const SKY_SHADE_1 = {
+  x: 0,
+  y: 0,
+  height: 1,
+  imgSrc: 'sky_3.png',
+  speedModifier: -4.5
+};
+
+const SKY_SHADE_2 = {
+  x: 0,
+  y: 0,
+  height: 1,
+  imgSrc: 'sky_3.png',
+  speedModifier: -4.5
+};
+
 const CLOUD_1 = {
   x: 500,
   y: 50,
@@ -45,20 +61,21 @@ const CLOUD_3 = {
 
 const GRASS_1 = {
   x: 0,
-  height: 1,
-  width: 800,
-  imgSrc: 'grass_1.png',
+  height: 30,
+  width: 825,
+  imgSrc: 'grass_3.png',
   speedModifier: 0
 };
 
 const GRASS_2 = {
   x: 10,
-  height: 1,
-  width: 800,
-  imgSrc: 'grass_1.png',
+  height: 30,
+  width: 825,
+  imgSrc: 'grass_3.png',
   speedModifier: 0
 };
 
 export const CLOUDS = [CLOUD_1, CLOUD_2, CLOUD_3];
 export const SKYS = [SKY_1, SKY_2];
+export const SKYS_SHADE = [SKY_SHADE_1, SKY_SHADE_2];
 export const GRASS = [GRASS_1, GRASS_2];

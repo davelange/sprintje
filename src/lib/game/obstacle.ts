@@ -5,11 +5,31 @@ import { game, obstacleManager } from './index';
 
 class Obstacle extends Element {
   enabled = true;
+  yMotion = 0;
+  yMotionModifier = 0;
 
   constructor(config: ElementConfig) {
     super(config);
 
+    this.yMotionModifier = this.id % 2 === 0 ? 1 : -1;
+
     return this;
+  }
+
+  manageYMotion() {
+    if (this.yMotion === 15) {
+      this.yMotion = 0;
+
+      return;
+    }
+
+    if (this.yMotion === 5) {
+      this.y -= this.yMotionModifier;
+    } else if (this.yMotion == 10) {
+      this.y += this.yMotionModifier;
+    }
+
+    this.yMotion++;
   }
 
   update() {
@@ -29,6 +49,7 @@ class Obstacle extends Element {
     }
 
     this.manageSprite();
+    this.manageYMotion();
     this.update();
 
     if (DEBUG_BOX) {

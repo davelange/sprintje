@@ -1,5 +1,5 @@
 import { COLOR_GROUND, COLOR_SKY, GROUND_Y_OFFSET } from './data/scenery/constants';
-import { CLOUDS, GRASS, SKYS } from './data/scenery/data';
+import { CLOUDS, GRASS, SKYS, SKYS_SHADE } from './data/scenery/data';
 import type { SubUpdate } from './game';
 import { game } from './index';
 import Repeater from './repeater';
@@ -26,12 +26,21 @@ export default class Scenery {
 
   addRepeaterEls() {
     SKYS.map((c) => new Repeater({ ...c, width: game.el.width }).addToScene(this.elements));
+    SKYS_SHADE.map((c, ind) =>
+      new Repeater({
+        ...c,
+        width: game.el.width,
+        x: ind * game.el.width
+      }).addToScene(this.elements)
+    );
     CLOUDS.map((c) => new Repeater(c).addToScene(this.elements));
     GRASS.map((c, ind) =>
       new Repeater({
         ...c,
-        x: ind * c.width,
-        y: game.el.height - GROUND_Y_OFFSET + 30
+        x: ind * game.el.width,
+        y: game.el.height - 34,
+        width: game.el.width,
+        height: 30
       }).addToScene(this.elements)
     );
   }

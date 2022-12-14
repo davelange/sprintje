@@ -1,7 +1,7 @@
 import { game } from './index';
 import Element, { type ElementConfig } from './element';
 import { OBS_SPEED } from './data/obstacles/constants';
-import type { SubUpdate } from './game';
+import { DEBUG_BOX } from './data/game/constants';
 
 interface RepeaterConfig extends ElementConfig {
   speedModifier: number;
@@ -19,32 +19,29 @@ class Repeater extends Element {
     this.speedModifier = config.speedModifier;
     this.static = config?.static || false;
     this.offscreenDistance = config.x + config.width;
-
-    game.subscribe(this.onUpdate.bind(this));
-  }
-
-  onUpdate(data: SubUpdate) {
-    /* if (data.event === 'RESTART') {      
-      this.x = 0;
-    } */
   }
 
   update() {
     this.x -= OBS_SPEED[game.lvl] + this.speedModifier;
 
-    if (this.x + this.width < this.offscreenDistance * -1) {
+    if (this.x + this.width < 0) {
       this.x = game.el.width;
     }
   }
 
   render() {
     if (!this.imgReady) {
-      console.log("not ready")
       return;
     }
 
     if (!this.static) {
       this.update();
+    }
+
+    if (DEBUG_BOX) {
+      game.ctx.strokeStyle = '#000';
+      game.ctx.lineWidth = 1;
+      game.ctx.strokeRect(this.x, this.y, this.width, this.width / this.imgRatio);
     }
 
     game.ctx.drawImage(this.img, this.x, this.y, this.width, this.width / this.imgRatio);

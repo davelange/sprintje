@@ -32,8 +32,7 @@ class Game {
     const size = CANVAS_SIZE[device];
     this.el.width = size.width;
     this.el.height = size.height;
-    this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
-    this.ctx.imageSmoothingEnabled = false;
+    this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;    
     this.ctx.font = '20px monospace';
   }
 

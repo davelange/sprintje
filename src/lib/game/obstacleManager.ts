@@ -73,6 +73,7 @@ class ObstacleManager {
 
     if (this.previous !== 'air' && game.lvl > 2) {
       obsType = rand(0, 1);
+
       if (obsType) this.previous = 'air';
     }
 
