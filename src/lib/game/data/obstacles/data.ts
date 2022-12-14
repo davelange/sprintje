@@ -2,8 +2,8 @@ import { CHAR_OFFSET_Y } from '../character/constants';
 
 const GROUND_OBS_1 = {
   width: 70,
-  height: 60,
-  y: 60 + CHAR_OFFSET_Y,
+  height: 65,
+  y: 65 + CHAR_OFFSET_Y,
   imgSrc: 'bike_1_sprite.png',
   btmp: [
     {
@@ -29,7 +29,7 @@ const GROUND_OBS_1 = {
 
 const AIR_OBS_1 = {
   width: 70,
-  height: 60,
+  height: 65,
   y: 170,
   imgSrc: 'bike_3_sprite.png',
   btmp: [

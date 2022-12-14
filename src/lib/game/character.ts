@@ -68,11 +68,15 @@ class Character extends Element {
   }
 
   jump() {
-    this.state = 'jump_asc';
+    if (this.state == 'running') {
+      this.state = 'jump_asc';
+    }
   }
 
   crouch() {
-    this.state = 'crouch_asc';
+    if (this.state == 'running') {
+      this.state = 'crouch_asc';
+    }
   }
 
   calcEasedMotion(motion: 'jump' | 'crouch') {
