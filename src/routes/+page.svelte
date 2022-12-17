@@ -1,75 +1,39 @@
 <script lang="ts">
-  import { character, game } from '$lib/game';
-  import challenge from '$lib/stores/challenge';
-  import { onMount } from 'svelte';
-
-  let canvasEl: HTMLCanvasElement;
-
-  onMount(() => {
-    game.init(canvasEl);
-  });
-
-  function handleClick(opt: string) {
-    if (opt === $challenge.answer) {
-      $challenge.active = false;
-      game.revive();
-    } else {
-      $challenge.failed = true;
-    }
-  }
-
-  function handleRestart() {
-    game.restart();
-    $challenge.active = false;
-  }
+  import '$lib/styles/app.css';
+  import Welcome from '$lib/components/Welcome.svelte';
+  import Canvas from '$lib/components/Canvas.svelte';
+  import Controls from '$lib/components/Controls.svelte';
+  import Challenge from '$lib/components/Challenge.svelte';
 </script>
 
-<section class="wrapper">
-  <canvas bind:this={canvasEl} />
-
-  {#if $challenge.active}
-    <div class="challenge">
-      {#if $challenge.failed}
-        <p>you failed</p>
-        <button on:click={handleRestart}>try again</button>
-      {:else}
-        <p>What does {$challenge.word} mean?</p>
-
-        {#each $challenge.opts as option, i}
-          <button on:click={() => handleClick(option)}>
-            {option}
-            {option === $challenge.answer ? 'X' : ''}
-          </button>
-        {/each}
-      {/if}
-    </div>
-  {/if}
-
-  <div class="controls">
-    <button on:click={() => game.play()}>play</button>
-    <button on:click={() => game.pause()}>pause</button>
-    <button on:pointerdown={() => character.jump()}>jump</button>
+<section class="root">
+  <div class="main">
+    <Canvas />
+    <Controls />
+    <Challenge />
   </div>
+  <Welcome />
 </section>
 
 <style>
-  .wrapper {
-    height: 100%;
+  .root {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    padding: 20px 8px;
     background: #fafafa;
   }
-  canvas {
-    width: 1000px;
-    max-width: 100vw;
-    margin: auto;
+  .main {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
   }
-  .controls {
-    margin-top: 20px;
-  }
-  .challenge {
-    position: absolute;
+
+  @media screen and (min-width: 40em) {
+    .root {
+      justify-content: center;
+    }
   }
 </style>

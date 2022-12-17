@@ -4,6 +4,7 @@ import isMobile from './utils/isMobile';
 
 export type SubUpdate = {
   event: string;
+  status: Game['status'];
 };
 
 class Game {
@@ -19,10 +20,33 @@ class Game {
 
   init(canvasEl: HTMLCanvasElement) {
     this.setupCanvas(canvasEl);
-
+    this.attachListeners();
     this.publish('INIT');
 
     setTimeout(() => this.loop(), 100);
+  }
+
+  subscribe(fn: (data: SubUpdate) => void) {
+    this.subs.push(fn);
+  }
+
+  publish(event: string) {
+    console.log(event);
+    this.subs?.forEach((cb) => cb({ event, status: this.status }));
+  }
+
+  attachListeners() {
+    document.addEventListener('keydown', this.handleKeyDown.bind(this));
+  }
+
+  handleKeyDown(evt: KeyboardEvent) {
+    if (evt.code === 'Space') {
+      if (this.status === 'idle') {
+        this.play();
+      } else if (this.status === 'running') {
+        this.pause();
+      }
+    }
   }
 
   setupCanvas(canvasEl: HTMLCanvasElement) {
@@ -34,15 +58,6 @@ class Game {
     this.el.height = size.height;
     this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
     this.ctx.font = '20px monospace';
-  }
-
-  subscribe(fn: (data: SubUpdate) => void) {
-    this.subs.push(fn);
-  }
-
-  publish(event: string) {
-    console.log(event);
-    this.subs?.forEach((cb) => cb({ event }));
   }
 
   upLevel() {
@@ -69,8 +84,8 @@ class Game {
     character.render();
 
     if (this.status !== 'idle') {
-      obstacleManager.render();
       announcer.render();
+      obstacleManager.render();
     }
 
     if (this.status === 'running') {
@@ -92,7 +107,8 @@ class Game {
 
     this.status = 'running';
     this.publish('PLAY');
-    this.loop();
+    
+    setTimeout(() => this.loop(), 200)
   }
 
   pause() {
@@ -116,11 +132,10 @@ class Game {
     this.points = 0;
     this.pointsCounter = 0;
     this.lvl = 1;
+    this.status = 'running';
 
     this.publish('RESTART');
     this.publish('PLAY');
-
-    this.status = 'running';
 
     setTimeout(() => this.loop(), 100);
   }

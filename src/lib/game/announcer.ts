@@ -10,8 +10,15 @@ export default class Announcer {
   }
 
   onUpdate(data: SubUpdate) {
-    if (data.event === 'UP_LEVEL' || data.event === 'CRASH') {
-      this.announceLvlUp = true;
+    switch (data.event) {
+      case 'UP_LEVEL':
+      case 'CRASH':
+        this.announceLvlUp = true;
+
+        break;
+
+      default:
+        break;
     }
   }
 
