@@ -1,10 +1,9 @@
 import { get, writable } from 'svelte/store';
 import { game } from '../game';
-import words_en from '../data/words_en';
+import data from '$lib/data/data';
 
 type ChallengeStore = {
   active: boolean;
-  failed: boolean;
   word: string;
   opts: string[];
   answer: string;
@@ -14,7 +13,6 @@ type ChallengeStore = {
 function challengeStore() {
   const store = writable<ChallengeStore>({
     active: false,
-    failed: false,
     word: '',
     answer: '',
     opts: [],
@@ -28,14 +26,18 @@ function challengeStore() {
     }));
   }
 
-  function rand(max = words_en.length) {
+  function rand(max = data.length) {
     const min = 0;
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   function randUniq(amount: number): number[] {
-    const gen = (list: number[], exclude: number[], target: number): number[] => {
+    const gen = (
+      list: number[],
+      exclude: number[],
+      target: number
+    ): number[] => {
       const idx = rand();
 
       if (exclude.includes(idx) || list.includes(idx)) {
@@ -54,24 +56,18 @@ function challengeStore() {
     return gen([], get(store).done, amount);
   }
 
-  async function getTranslation(word: string) {
-    const tr = await fetch(`api/translate?word=${word}`);
-
-    return (await tr.json()).word;
-  }
-
   async function newChallenge() {
     const opts = randUniq(4);
-    console.log(opts);
+
     const correctIdx = opts[rand(3)];
 
-    const translation = await getTranslation(words_en[correctIdx]);
+    const ch = data[correctIdx];
 
     _set({
       done: [...get(store).done, correctIdx],
-      word: translation,
-      answer: words_en[correctIdx],
-      opts: opts.map((i) => words_en[i])
+      word: ch.nl,
+      answer: ch.en,
+      opts: opts.map((i) => data[i].en)
     });
   }
 
@@ -89,7 +85,7 @@ function challengeStore() {
       case 'REVIVE':
       case 'RESTART':
         _set({
-          failed: false,
+          active: false,
           word: '',
           answer: '',
           opts: []
