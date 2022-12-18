@@ -61,6 +61,9 @@ function challengeStore() {
 
     const correctIdx = opts[rand(3)];
 
+    console.log(opts)
+    console.log(correctIdx)
+
     const ch = data[correctIdx];
 
     _set({

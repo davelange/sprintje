@@ -2,7 +2,8 @@
   import challenge from '$lib/stores/challenge';
   import { game } from '$lib/game';
 
-  let state: 'hidden' | 'intro' | 'challenge' | 'failed' = 'hidden';
+  let state: 'hidden' | 'intro' | 'challenge' | 'failed' | 'success' = 'hidden';
+  let reveal = window?.location.href.includes('reveal');
 
   game.subscribe(({ event }) => {
     switch (event) {
@@ -22,13 +23,19 @@
   });
 
   function handleClick(opt: string) {
-    opt === $challenge.answer ? game.revive() : (state = 'failed');
+    if (opt === $challenge.answer) {
+      state = 'success';
+
+      setTimeout(() => {
+        game.revive();
+      }, 500);
+    } else state = 'failed';
   }
 </script>
 
 {#if state === 'intro'}
   <div class="crash-title">
-    <h2>YOU CRASHED!</h2>
+    <h2>OH NO!</h2>
   </div>
 {:else if state === 'challenge'}
   <div class="root">
@@ -37,7 +44,9 @@
     {#each $challenge.opts as option}
       <button type="button" class="btn" on:click={() => handleClick(option)}>
         {option}
-        {option === $challenge.answer ? 'X' : ''}
+        {#if option === $challenge.answer && reveal}
+          <span>&larr;</span>
+        {/if}
       </button>
     {/each}
   </div>
@@ -45,6 +54,10 @@
   <div class="root">
     <p class="game-over">game over</p>
     <button class="btn" on:click={() => game.restart()}>play again</button>
+  </div>
+{:else if state === 'success'}
+  <div class="root">
+    <p class="success">correct!</p>
   </div>
 {/if}
 
@@ -54,46 +67,53 @@
   }
   .btn {
     display: block;
-    margin: 0 0 16px;
-    width: 100%;
+    margin: 0 auto 16px;
     padding: 8px;
     background: #fff;
     border: 1px solid #333;
     border-radius: 4px;
     filter: drop-shadow(2px 2px 0 black);
   }
-
   .btn:last-of-type {
-    margin: 0;
+    margin-bottom: 0;
+  }
+  .prompt {
+    margin-bottom: 16px;
   }
   .game-over {
     font-weight: 700;
     margin-bottom: 16px;
   }
+  .success {
+    font-weight: 700;
+  }
   .crash-title {
-    color: #333;
     letter-spacing: 4px;
-    text-shadow: #fff 2px 2px;
+    color: #333;
+    text-align: center;
   }
 
   @media screen and (min-width: 40em) {
+    .root {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      padding: 36px;
+      width: 300px;
+      height: fit-content;
+      background: #fafafa;
+      border-radius: 10px;
+    }
+    .btn {
+      width: 100%;
+    }
     .crash-title {
       position: absolute;
       inset: 0;
       height: fit-content;
       margin: auto;
       text-align: center;
-      animation: pulse 0.3s steps(2, end) infinite;
-    }
-    .root {
-      position: absolute;
-      inset: 0;
-      margin: auto;
-      padding: 20px;
-      width: 300px;
-      height: fit-content;
-      background: #fafafa;
-      border-radius: 10px;
+      color: #fff;
     }
   }
 </style>

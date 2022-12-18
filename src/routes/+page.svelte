@@ -6,6 +6,9 @@
   import Challenge from '$lib/components/Challenge.svelte';
 </script>
 
+<svelte:head>
+  <title>sprintje</title>
+</svelte:head>
 <section class="root">
   <div class="main">
     <Canvas />

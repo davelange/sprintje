@@ -9,13 +9,13 @@
 </script>
 
 <div class="root" class:hidden={!show}>
-  <p class="bold">Oh no!</p>
+  <img class="img-mono" src="img/mono.png" alt="A monocycle" />
   <p>
-    You're lost somewhere in the Netherlands, and you're going the wrong way.
+    Oh no! You're lost somewhere in the Netherlands, and you're going the wrong
+    way.
   </p>
   <p>
-    If you crash, you'll have to use your dutch speaking skills. Are you
-    ready?
+    If you crash, you'll have to use your dutch speaking skills. Are you ready?
   </p>
   <p class="bold">Press &uarr; to jump, and &darr; to duck.</p>
   <button type="button" class="btn" on:click={() => game.play()}> PLAY </button>
@@ -30,6 +30,10 @@
     justify-content: center;
     margin: 0 auto;
     width: 90%;
+  }
+  .img-mono {
+    width: 40px;
+    margin-bottom: 20px;
   }
   .hidden {
     display: none;
