@@ -42,11 +42,24 @@ export default class Announcer {
       if (game.points % 2 === 0) lvlText = ' ';
     }
 
-    game.ctx.fillText(`LVL ${lvlText} | ${game.points.toString().padStart(3, '0')}`, 40, 40);
+    game.ctx.fillText(
+      `LVL ${lvlText} | ${game.points.toString().padStart(3, '0')}`,
+      40,
+      40
+    );
+  }
+
+  renderHiScore() {
+    game.ctx.textAlign = 'right';
+
+    if (game.highScore) {
+      game.ctx.fillText(`HI: ${game.highScore}`, game.el.width - 40, 40);
+    }
   }
 
   render() {
     this.update();
     this.renderPoints();
+    this.renderHiScore();
   }
 }

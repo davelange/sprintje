@@ -3,33 +3,73 @@ import { OBS_SPEED } from './data/obstacles/constants';
 import Element, { type ElementConfig } from './element';
 import { game, obstacleManager } from './index';
 
+interface ObstacleConfig extends ElementConfig {
+  yMotionType: 'bounce' | 'rake';
+}
+
 class Obstacle extends Element {
   enabled = true;
   yMotion = 0;
   yMotionModifier = 0;
+  yMotionType = 'bounce';
 
-  constructor(config: ElementConfig) {
+  constructor(config: ObstacleConfig) {
     super(config);
 
-    this.yMotionModifier = this.id % 2 === 0 ? 1 : -1;
+    this.yMotionType = config.yMotionType;
+
+    switch (config.yMotionType) {
+      case 'bounce':
+        this.yMotionModifier = 1;
+        break;
+      case 'rake':
+        this.yMotionModifier = 10;
+        break;
+    }
 
     return this;
   }
 
-  manageYMotion() {
-    if (this.yMotion === 15) {
+  bounce() {
+    if (this.yMotion === 6) {
       this.yMotion = 0;
+      this.yMotionModifier *= -1;
 
       return;
     }
 
-    if (this.yMotion === 5) {
+    if (this.yMotion % 5 === 0) {
       this.y -= this.yMotionModifier;
-    } else if (this.yMotion == 10) {
-      this.y += this.yMotionModifier;
     }
 
     this.yMotion++;
+  }
+
+  rake() {
+    if (this.yMotion === 50) {
+      this.yMotion = 0;
+      this.yMotionModifier *= -1;
+
+      return;
+    }
+
+    if (this.yMotion % 2 === 0) {
+      this.y -= this.yMotionModifier;
+    }
+
+    this.yMotion++;
+  }
+
+  manageYMotion() {
+    switch (this.yMotionType) {
+      case 'bounce':
+        this.bounce();
+        break;
+
+      case 'rake':
+        this.rake();
+        break;
+    }
   }
 
   update() {

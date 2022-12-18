@@ -1,5 +1,5 @@
 import type Character from './character';
-import { LEVEL_REQS } from './data/game/constants';
+import { CLEAR_REQUIREMENT } from './data/game/constants';
 import { OBS_VARIATIONS } from './data/obstacles/data';
 import type { SubUpdate } from './game';
 import { character, game } from './index';
@@ -16,7 +16,9 @@ class ObstacleManager {
 
   constructor() {
     const validRange = isMobile() ? [100, 500] : [350, 700];
-    this.entryPoints = new Array(30).fill(0).map(() => rand(validRange[0], validRange[1]));
+    this.entryPoints = new Array(30)
+      .fill(0)
+      .map(() => rand(validRange[0], validRange[1]));
 
     game.subscribe(this.onUpdate.bind(this));
   }
@@ -39,8 +41,9 @@ class ObstacleManager {
     this.obstacles = this.obstacles.filter((obs) => obs.id !== id);
     this.cleared++;
 
-    if (LEVEL_REQS[this.cleared]) {
+    if (this.cleared === CLEAR_REQUIREMENT) {
       game.upLevel();
+      this.cleared = 0;
     }
   }
 
@@ -70,11 +73,20 @@ class ObstacleManager {
     }
 
     let obsType = 0;
+    let yMotionType: 'rake' | 'bounce' = 'bounce';
 
-    if (this.previous !== 'air' && game.lvl > 2) {
-      obsType = rand(0, 1);
+    if (game.lvl > 1) {
+      if (this.previous === 'ground') {
+        obsType = rand(0, 1);
 
-      if (obsType) this.previous = 'air';
+        if (obsType) {
+          this.previous = 'air';
+        } else {
+          yMotionType = rand(0, 1) ? 'rake' : 'bounce';
+        }
+      } else {
+        this.previous = 'ground';
+      }
     }
 
     const obs = OBS_VARIATIONS[obsType];
@@ -82,7 +94,8 @@ class ObstacleManager {
     const config = {
       ...obs,
       x: game.el.width,
-      y: game.el.height - obs.y
+      y: game.el.height - obs.y,
+      yMotionType
     };
 
     new Obstacle(config).addToScene(this.obstacles);

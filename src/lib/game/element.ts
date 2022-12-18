@@ -5,6 +5,7 @@ export interface ElementConfig {
   y: number;
   imgSrc?: string;
   btmp?: { sx: number; sy: number; sw: number; sh: number }[];
+  yMotionModifier?: number;
 }
 
 class Element {

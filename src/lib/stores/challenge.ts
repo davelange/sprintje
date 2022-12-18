@@ -26,7 +26,7 @@ function challengeStore() {
     }));
   }
 
-  function rand(max = data.length) {
+  function rand(max = data.length - 1) {
     const min = 0;
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -61,8 +61,8 @@ function challengeStore() {
 
     const correctIdx = opts[rand(3)];
 
-    console.log(opts)
-    console.log(correctIdx)
+    console.log(opts);
+    console.log(correctIdx);
 
     const ch = data[correctIdx];
 

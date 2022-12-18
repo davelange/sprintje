@@ -28,7 +28,7 @@
     align-items: flex-start;
     flex-direction: column;
     justify-content: center;
-    margin: 0 auto;
+    margin: 0 auto 8vh;
     width: 90%;
   }
   .img-mono {
@@ -57,6 +57,7 @@
     .root {
       align-items: center;
       text-align: center;
+      margin: auto;
     }
   }
 </style>

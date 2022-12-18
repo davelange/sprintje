@@ -16,11 +16,13 @@ class Game {
   lvl = 1;
   points = 0;
   pointsCounter = 0;
+  highScore = 0;
   subs: ((a: SubUpdate) => void)[] = [];
 
   init(canvasEl: HTMLCanvasElement) {
     this.setupCanvas(canvasEl);
     this.attachListeners();
+    this.getHiScore();
     this.publish('INIT');
 
     setTimeout(() => this.loop(), 100);
@@ -49,6 +51,19 @@ class Game {
     }
   }
 
+  saveHiScore() {
+    if (this.points > this.highScore) {
+      this.highScore = this.points;
+      localStorage.setItem('score', this.points.toString());
+    }
+  }
+
+  getHiScore() {
+    const sc = localStorage.getItem('score');
+
+    this.highScore = Number(sc);
+  }
+
   setupCanvas(canvasEl: HTMLCanvasElement) {
     this.el = canvasEl;
 
@@ -57,7 +72,7 @@ class Game {
     this.el.width = size.width;
     this.el.height = size.height;
     this.ctx = canvasEl.getContext('2d') as CanvasRenderingContext2D;
-    this.ctx.font = '20px monospace';
+    this.ctx.font = '18px IBM Plex Mono';
   }
 
   upLevel() {
@@ -107,8 +122,8 @@ class Game {
 
     this.status = 'running';
     this.publish('PLAY');
-    
-    setTimeout(() => this.loop(), 200)
+
+    setTimeout(() => this.loop(), 200);
   }
 
   pause() {
@@ -118,6 +133,7 @@ class Game {
 
   die() {
     this.status = 'game_over';
+    this.saveHiScore();
     this.publish('GAME_OVER');
   }
 

@@ -5,7 +5,6 @@
   let status: Game['status'] = 'idle';
   let show = false;
   $: showControls = ['running', 'pause'].includes(status);
-  $: showPlayBtn = ['idle', 'game_over'].includes(status);
 
   game.subscribe(({ event }) => {
     if (event !== 'INIT') show = true;
@@ -23,11 +22,7 @@
 </script>
 
 <div class="root" class:hidden={!show}>
-  {#if showPlayBtn}
-    <button type="button" class="btn" on:click={() => game.play()}>
-      PLAY
-    </button>
-  {:else if showControls}
+  {#if showControls}
     <div class="btn-row" class:disabled={status === 'pause'}>
       <button
         type="button"
@@ -73,7 +68,6 @@
     letter-spacing: 2px;
     background: #fff;
     border: 1px solid #333;
-    filter: drop-shadow(2px 2px 0 black);
   }
   .control {
     flex: 1 0 auto;

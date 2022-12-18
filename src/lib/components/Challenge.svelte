@@ -29,7 +29,10 @@
       setTimeout(() => {
         game.revive();
       }, 500);
-    } else state = 'failed';
+    } else {
+      state = 'failed';
+      game.die();
+    }
   }
 </script>
 
