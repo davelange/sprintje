@@ -10,12 +10,12 @@
   <title>sprintje</title>
 </svelte:head>
 <section class="root">
+  <Welcome />
   <div class="main">
     <Canvas />
     <Controls />
     <Challenge />
   </div>
-  <Welcome />
 </section>
 
 <style>

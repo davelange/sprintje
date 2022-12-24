@@ -43,7 +43,7 @@ class Game {
 
   handleKeyDown(evt: KeyboardEvent) {
     if (evt.code === 'Space') {
-      if (this.status === 'idle') {
+      if (this.status === 'pause') {
         this.play();
       } else if (this.status === 'running') {
         this.pause();

@@ -41,7 +41,7 @@
     <h2>OH NO!</h2>
   </div>
 {:else if state === 'challenge'}
-  <div class="root">
+  <form class="root">
     <p class="prompt">What does <strong>{$challenge.word}</strong> mean?</p>
 
     {#each $challenge.opts as option}
@@ -52,10 +52,11 @@
         {/if}
       </button>
     {/each}
-  </div>
+  </form>
 {:else if state === 'failed'}
   <div class="root">
     <p class="game-over">game over</p>
+    <p class="reveal">{$challenge.word} means {$challenge.answer}</p>
     <button class="btn" on:click={() => game.restart()}>play again</button>
   </div>
 {:else if state === 'success'}
@@ -85,6 +86,8 @@
   }
   .game-over {
     font-weight: 700;
+  }
+  .reveal {
     margin-bottom: 16px;
   }
   .success {

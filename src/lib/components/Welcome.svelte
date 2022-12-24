@@ -9,7 +9,7 @@
 </script>
 
 <div class="root" class:hidden={!show}>
-  <img class="img-mono" src="img/mono.png" alt="A monocycle" />
+  <img class="img-mono" src="img/mono.png" alt="A monocycle" width="40px" />
   <p>
     Oh no! You're lost somewhere in the Netherlands, and you're going the wrong
     way.
