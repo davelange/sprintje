@@ -1,11 +1,8 @@
 import { CANVAS_SIZE } from './data/game/constants';
 import { announcer, character, obstacleManager, scenery } from './index';
 import isMobile from './utils/isMobile';
-
-export type SubUpdate = {
-  event: string;
-  status: Game['status'];
-};
+import type { Event, SubUpdate, Subscribers } from './types';
+import { events } from './types';
 
 class Game {
   el: HTMLCanvasElement;
@@ -17,24 +14,35 @@ class Game {
   points = 0;
   pointsCounter = 0;
   highScore = 0;
-  subs: ((a: SubUpdate) => void)[] = [];
+  subs: Subscribers = {} as Subscribers;
 
   init(canvasEl: HTMLCanvasElement) {
     this.setupCanvas(canvasEl);
     this.attachListeners();
     this.getHiScore();
-    this.publish('INIT');
+    this.publish('init');
 
     setTimeout(() => this.loop(), 100);
   }
 
-  subscribe(fn: (data: SubUpdate) => void) {
-    this.subs.push(fn);
+  on(event: Event | Event[] | 'all', fn: (data: SubUpdate) => void) {
+    let evt = event;
+
+    if (evt === 'all') {
+      evt = [...events];
+    } else if (!Array.isArray(evt)) {
+      evt = [evt];
+    }
+
+    evt.forEach((channel) => {
+      const current = this.subs?.[channel] || [];
+      this.subs[channel] = [...current, fn];
+    });
   }
 
-  publish(event: string) {
+  publish(event: Event) {
     console.log(event);
-    this.subs?.forEach((cb) => cb({ event, status: this.status }));
+    this.subs[event].forEach((cb) => cb({ event, status: this.status }));
   }
 
   attachListeners() {
@@ -77,12 +85,12 @@ class Game {
 
   upLevel() {
     this.lvl++;
-    this.publish('UP_LEVEL');
+    this.publish('up_level');
   }
 
   crash() {
     this.status = 'crash';
-    this.publish('CRASH');
+    this.publish('crash');
   }
 
   updatePoints() {
@@ -121,25 +129,25 @@ class Game {
     }
 
     this.status = 'running';
-    this.publish('PLAY');
+    this.publish('play');
 
     setTimeout(() => this.loop(), 200);
   }
 
   pause() {
     this.status = 'pause';
-    this.publish('PAUSE');
+    this.publish('pause');
   }
 
   die() {
     this.status = 'game_over';
     this.saveHiScore();
-    this.publish('GAME_OVER');
+    this.publish('game_over');
   }
 
   revive() {
     this.status = 'running';
-    this.publish('REVIVE');
+    this.publish('revive');
     this.loop();
   }
 
@@ -150,8 +158,8 @@ class Game {
     this.lvl = 1;
     this.status = 'running';
 
-    this.publish('RESTART');
-    this.publish('PLAY');
+    this.publish('restart');
+    this.publish('play');
 
     setTimeout(() => this.loop(), 100);
   }

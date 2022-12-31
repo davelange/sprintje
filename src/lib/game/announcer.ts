@@ -1,25 +1,11 @@
 import { game } from './index';
-import type { SubUpdate } from './game';
 
 export default class Announcer {
   announceLvlUp = false;
   announceLvlUpCounter = 0;
 
   constructor() {
-    game.subscribe(this.onUpdate.bind(this));
-  }
-
-  onUpdate(data: SubUpdate) {
-    switch (data.event) {
-      case 'UP_LEVEL':
-      case 'CRASH':
-        this.announceLvlUp = true;
-
-        break;
-
-      default:
-        break;
-    }
+    game.on(['up_level', 'crash'], () => (this.announceLvlUp = true));
   }
 
   update() {

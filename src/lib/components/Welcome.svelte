@@ -3,9 +3,7 @@
 
   let show = true;
 
-  game.subscribe(({ event }) => {
-    if (event !== 'INIT') show = false;
-  });
+  game.on('play', () => (show = false));
 </script>
 
 <div class="root" class:hidden={!show}>

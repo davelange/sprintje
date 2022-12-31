@@ -1,9 +1,10 @@
-import { CHAR_HEIGHT, CHAR_OFFSET_X } from './constants';
+import { CHAR_HEIGHT, CHAR_OFFSET_X, CHAR_OFFSET_Y } from './constants';
 
 export const CHAR = {
   width: 65,
   height: CHAR_HEIGHT,
   x: CHAR_OFFSET_X,
+  y: CHAR_HEIGHT - CHAR_OFFSET_Y,
   imgSrc: 'mono_sprite_1.png',
   btmp: [
     {
