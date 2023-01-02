@@ -1,6 +1,6 @@
 import { easeOutCirc } from './utils/ease';
 import Element, { type ElementConfig } from './element';
-import { game } from './index';
+import game from './game';
 import {
   CHAR_HEIGHT,
   CHAR_OFFSET_X,

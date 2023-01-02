@@ -1,12 +1,17 @@
 import { CANVAS_SIZE } from './data/game/constants';
-import { announcer, character, obstacleManager, scenery } from './index';
 import isMobile from './utils/isMobile';
 import type { Event, SubUpdate, Subscribers } from './types';
 import { events } from './types';
+import type { Character, Announcer, Scenery, ObstacleManager } from './index';
 
 class Game {
   el: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+
+  character: Character;
+  announcer: Announcer;
+  scenery: Scenery;
+  obstacleManager: ObstacleManager;
 
   status: 'idle' | 'pause' | 'running' | 'crash' | 'game_over' = 'idle';
   frame = 0;
@@ -16,10 +21,22 @@ class Game {
   highScore = 0;
   subs: Subscribers = {} as Subscribers;
 
-  init(canvasEl: HTMLCanvasElement) {
-    this.setupCanvas(canvasEl);
+  init(config: {
+    canvasEl: HTMLCanvasElement;
+    character: Character;
+    announcer: Announcer;
+    scenery: Scenery;
+    obstacleManager: ObstacleManager;
+  }) {
+    this.setupCanvas(config.canvasEl);
     this.attachListeners();
     this.getHiScore();
+
+    this.character = config.character;
+    this.announcer = config.announcer;
+    this.scenery = config.scenery;
+    this.obstacleManager = config.obstacleManager;
+
     this.publish('init');
 
     setTimeout(() => this.loop(), 100);
@@ -102,12 +119,12 @@ class Game {
   }
 
   render() {
-    scenery.render();
-    character.render();
+    this.scenery.render();
+    this.character.render();
 
     if (this.status !== 'idle') {
-      announcer.render();
-      obstacleManager.render();
+      this.announcer.render();
+      this.obstacleManager.render();
     }
 
     if (this.status === 'running') {
@@ -164,4 +181,6 @@ class Game {
   }
 }
 
-export default Game;
+const game = new Game();
+
+export default game;

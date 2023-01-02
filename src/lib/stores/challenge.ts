@@ -1,5 +1,6 @@
 import { get, writable } from 'svelte/store';
-import { game } from '../game';
+//import { game } from '../game';
+import game from '../game/game';
 import data from '$lib/data/data';
 
 type ChallengeStore = {
@@ -87,6 +88,7 @@ function challengeStore() {
   });
 
   return {
+    /* init, */
     subscribe: store.subscribe,
     set: store.set,
     update: store.update,

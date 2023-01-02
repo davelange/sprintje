@@ -15,7 +15,7 @@ export type Event = typeof events[number];
 
 export type SubUpdate = {
   event: Event;
-  status: Game['status'];
+  status: typeof Game['status'];
 };
 
 export type Subscribers = Record<Event, ((a: SubUpdate) => void)[]>;
