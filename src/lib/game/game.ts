@@ -32,8 +32,6 @@ class Game {
     this.attachListeners();
     this.getHiScore();
 
-    console.log(this.subs)
-
     this.character = config.character;
     this.announcer = config.announcer;
     this.scenery = config.scenery;
