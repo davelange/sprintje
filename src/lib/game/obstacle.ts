@@ -1,7 +1,6 @@
 import { DEBUG_BOX } from './data/game/constants';
 import { OBS_SPEED } from './data/obstacles/constants';
 import Element, { type ElementConfig } from './element';
-//import { game, obstacleManager } from './index';
 import game from './game';
 
 interface ObstacleConfig extends ElementConfig {

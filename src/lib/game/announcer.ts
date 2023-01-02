@@ -1,5 +1,4 @@
-//import { game } from './index';
-import game from "./game";
+import game from './game';
 
 export default class Announcer {
   announceLvlUp = false;

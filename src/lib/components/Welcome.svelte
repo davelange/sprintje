@@ -1,5 +1,5 @@
 <script lang="ts">
-  import game from '$lib/game/game';
+  import game from '$lib/game';
 
   let show = true;
 

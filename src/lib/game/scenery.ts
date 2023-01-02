@@ -4,7 +4,6 @@ import {
   GROUND_Y_OFFSET
 } from './data/scenery/constants';
 import { CLOUDS, GRASS, SKYS, SKYS_SHADE } from './data/scenery/data';
-// import { game } from './index';
 import game from './game';
 import Repeater from './repeater';
 

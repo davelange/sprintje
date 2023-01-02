@@ -1,12 +1,22 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  //import { game } from '$lib/game';
-  import game from '$lib/game/game';
+  import game from '$lib/game';
+  import { Character, Announcer, Scenery, ObstacleManager } from '$lib/game';
+  import { CHAR } from '$lib/game/data/character/data';
 
   let canvasEl: HTMLCanvasElement;
   let show = false;
   let crash = false;
 
+  onMount(() => {
+    game.init({
+      canvasEl,
+      character: new Character(CHAR),
+      announcer: new Announcer(),
+      scenery: new Scenery(),
+      obstacleManager: new ObstacleManager()
+    });
+  });
   game.on('play', () => {
     show = true;
   });
@@ -14,10 +24,6 @@
     crash = true;
 
     setTimeout(() => (crash = false), 500);
-  });
-
-  onMount(() => {
-    game.init(canvasEl);
   });
 </script>
 

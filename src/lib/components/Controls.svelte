@@ -1,7 +1,6 @@
 <script lang="ts">
-  //import { character, game } from '$lib/game';
-  import game from '$lib/game/game';
-  import type Game from '$lib/game/game';
+  import game from '$lib/game';
+  import type Game from '$lib/game';
 
   let status: typeof Game['status'] = 'idle';
   let show = false;

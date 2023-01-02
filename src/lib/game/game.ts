@@ -1,13 +1,8 @@
 import { CANVAS_SIZE } from './data/game/constants';
-// import { announcer, character, obstacleManager, scenery } from './index';
 import isMobile from './utils/isMobile';
 import type { Event, SubUpdate, Subscribers } from './types';
 import { events } from './types';
-import Character from './character';
-import Announcer from './announcer';
-import Scenery from './scenery';
-import ObstacleManager from './obstacleManager';
-import { CHAR } from './data/character/data';
+import type { Character, Announcer, Scenery, ObstacleManager } from './index';
 
 class Game {
   el: HTMLCanvasElement;
@@ -26,15 +21,21 @@ class Game {
   highScore = 0;
   subs: Subscribers = {} as Subscribers;
 
-  init(canvasEl: HTMLCanvasElement) {
-    this.setupCanvas(canvasEl);
+  init(config: {
+    canvasEl: HTMLCanvasElement;
+    character: Character;
+    announcer: Announcer;
+    scenery: Scenery;
+    obstacleManager: ObstacleManager;
+  }) {
+    this.setupCanvas(config.canvasEl);
     this.attachListeners();
     this.getHiScore();
 
-    this.character = new Character(CHAR);
-    this.announcer = new Announcer();
-    this.scenery = new Scenery();
-    this.obstacleManager = new ObstacleManager();
+    this.character = config.character;
+    this.announcer = config.announcer;
+    this.scenery = config.scenery;
+    this.obstacleManager = config.obstacleManager;
 
     this.publish('init');
 
