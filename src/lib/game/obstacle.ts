@@ -16,67 +16,28 @@ class Obstacle extends Element {
     super(config);
 
     this.onFrame(1, () => this.manageSprite());
+    this.setupYMotion(config.yMotionType);
 
-    switch (config.yMotionType) {
+    return this;
+  }
+
+  setupYMotion(motionType: 'bounce' | 'rake') {
+    switch (motionType) {
       case 'bounce':
         this.yMotionModifier = 1;
         this.onFrame(5, () => {
           this.y -= this.yMotionModifier;
           this.yMotionModifier *= -1;
         });
-
         break;
+
       case 'rake':
-        this.yMotionModifier = 10;
-        this.onFrame(2, () => (this.y -= this.yMotionModifier));
+        this.yMotionModifier = 8;
+        this.onFrame(1, () => (this.y -= this.yMotionModifier));
         this.onFrame(50, () => (this.yMotionModifier *= -1));
         break;
     }
-
-    return this;
   }
-
-  bounce() {
-    if (this.yMotion === 6) {
-      this.yMotion = 0;
-      this.yMotionModifier *= -1;
-
-      return;
-    }
-
-    if (this.yMotion % 5 === 0) {
-      this.y -= this.yMotionModifier;
-    }
-
-    this.yMotion++;
-  }
-
-  rake() {
-    if (this.yMotion === 50) {
-      this.yMotion = 0;
-      this.yMotionModifier *= -1;
-
-      return;
-    }
-
-    if (this.yMotion % 2 === 0) {
-      this.y -= this.yMotionModifier;
-    }
-
-    this.yMotion++;
-  }
-
-  /* manageYMotion() {
-    switch (this.yMotionType) {
-      case 'bounce':
-        this.bounce();
-        break;
-
-      case 'rake':
-        this.rake();
-        break;
-    }
-  } */
 
   update() {
     if (!this.enabled) return;

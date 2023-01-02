@@ -17,8 +17,7 @@ class Game extends EveryNFrame {
   status: 'idle' | 'pause' | 'running' | 'crash' | 'game_over' = 'idle';
   frame = 0;
   lvl = 1;
-  points = 0;
-  pointsCounter = 0;
+  points = 0;  
   highScore = 0;
   subs: Subscribers = {} as Subscribers;
 
@@ -163,7 +162,6 @@ class Game extends EveryNFrame {
   restart() {
     this.frame = 0;
     this.points = 0;
-    this.pointsCounter = 0;
     this.lvl = 1;
     this.status = 'running';
 
