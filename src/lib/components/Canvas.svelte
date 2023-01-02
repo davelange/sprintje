@@ -6,14 +6,13 @@
   let show = false;
   let crash = false;
 
-  game.subscribe(({ event }) => {
-    if (event === 'PLAY') {
-      show = true;
-    } else if (event === 'CRASH') {
-      crash = true;
+  game.on('play', () => {
+    show = true;
+  });
+  game.on('crash', () => {
+    crash = true;
 
-      setTimeout(() => (crash = false), 500);
-    }
+    setTimeout(() => (crash = false), 500);
   });
 
   onMount(() => {

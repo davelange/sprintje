@@ -5,21 +5,15 @@
   let state: 'hidden' | 'intro' | 'challenge' | 'failed' | 'success' = 'hidden';
   let reveal = window?.location.href.includes('reveal');
 
-  game.subscribe(({ event }) => {
-    switch (event) {
-      case 'CRASH':
-        state = 'intro';
+  game.on('crash', () => {
+    state = 'intro';
 
-        setTimeout(() => {
-          state = 'challenge';
-        }, 800);
-        break;
-
-      case 'PLAY':
-      case 'REVIVE':
-        state = 'hidden';
-        break;
-    }
+    setTimeout(() => {
+      state = 'challenge';
+    }, 800);
+  });
+  game.on(['play', 'revive'], () => {
+    state = 'hidden';
   });
 
   function handleClick(opt: string) {

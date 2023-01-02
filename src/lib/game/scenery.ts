@@ -1,6 +1,9 @@
-import { COLOR_GROUND, COLOR_SKY, GROUND_Y_OFFSET } from './data/scenery/constants';
+import {
+  COLOR_GROUND,
+  COLOR_SKY,
+  GROUND_Y_OFFSET
+} from './data/scenery/constants';
 import { CLOUDS, GRASS, SKYS, SKYS_SHADE } from './data/scenery/data';
-import type { SubUpdate } from './game';
 import { game } from './index';
 import Repeater from './repeater';
 
@@ -8,24 +11,17 @@ export default class Scenery {
   elements: Repeater[] = [];
 
   constructor() {
-    game.subscribe(this.onUpdate.bind(this));
-  }
-
-  onUpdate(data: SubUpdate) {
-    switch (data.event) {
-      case 'INIT':
-        this.addRepeaterEls();
-        break;
-
-      case 'RESTART':
-        this.elements = [];
-        this.addRepeaterEls();
-        break;
-    }
+    game.on('init', () => this.addRepeaterEls());
+    game.on('restart', () => {
+      this.elements = [];
+      this.addRepeaterEls();
+    });
   }
 
   addRepeaterEls() {
-    SKYS.map((c) => new Repeater({ ...c, width: game.el.width }).addToScene(this.elements));
+    SKYS.map((c) =>
+      new Repeater({ ...c, width: game.el.width }).addToScene(this.elements)
+    );
     SKYS_SHADE.map((c, ind) =>
       new Repeater({
         ...c,

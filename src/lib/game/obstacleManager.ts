@@ -1,7 +1,6 @@
 import type Character from './character';
 import { CLEAR_REQUIREMENT } from './data/game/constants';
 import { OBS_VARIATIONS } from './data/obstacles/data';
-import type { SubUpdate } from './game';
 import { character, game } from './index';
 import Obstacle from './obstacle';
 import isMobile from './utils/isMobile';
@@ -20,21 +19,13 @@ class ObstacleManager {
       .fill(0)
       .map(() => rand(validRange[0], validRange[1]));
 
-    game.subscribe(this.onUpdate.bind(this));
-  }
-
-  onUpdate(data: SubUpdate) {
-    switch (data.event) {
-      case 'RESTART':
-      case 'INIT':
-        this.obstacles = [];
-        this.cleared = 0;
-        break;
-
-      case 'REVIVE':
-        this.skipFirst();
-        break;
-    }
+    game.on(['restart', 'init'], () => {
+      this.obstacles = [];
+      this.cleared = 0;
+    });
+    game.on('revive', () => {
+      this.skipFirst();
+    });
   }
 
   removeObstacle(id: number) {

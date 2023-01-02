@@ -58,12 +58,7 @@ function challengeStore() {
 
   async function newChallenge() {
     const opts = randUniq(4);
-
     const correctIdx = opts[rand(3)];
-
-    console.log(opts);
-    console.log(correctIdx);
-
     const ch = data[correctIdx];
 
     _set({
@@ -74,28 +69,21 @@ function challengeStore() {
     });
   }
 
-  game.subscribe((data) => {
-    switch (data.event) {
-      case 'CRASH':
-        newChallenge();
+  game.on('crash', () => {
+    newChallenge();
 
-        _set({
-          active: true
-        });
+    _set({
+      active: true
+    });
+  });
 
-        break;
-
-      case 'REVIVE':
-      case 'RESTART':
-        _set({
-          active: false,
-          word: '',
-          answer: '',
-          opts: []
-        });
-
-        break;
-    }
+  game.on(['revive', 'restart'], () => {
+    _set({
+      active: false,
+      word: '',
+      answer: '',
+      opts: []
+    });
   });
 
   return {

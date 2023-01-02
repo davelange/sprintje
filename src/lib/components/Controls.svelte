@@ -6,8 +6,10 @@
   let show = false;
   $: showControls = ['running', 'pause'].includes(status);
 
-  game.subscribe(({ event }) => {
-    if (event !== 'INIT') show = true;
+  game.on('all', ({ event }) => {
+    if (event !== 'init') {
+      show = true;
+    }
 
     status = game.status;
   });
