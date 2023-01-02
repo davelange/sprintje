@@ -5,7 +5,6 @@
   let status: typeof Game['status'] = 'idle';
   let show = false;
   $: showControls = ['running', 'pause'].includes(status);
-  $: character = game.character;
 
   game.on('all', ({ event }) => {
     if (event !== 'init') {
@@ -30,14 +29,14 @@
       <button
         type="button"
         class="btn control"
-        on:pointerdown={() => character.jump()}
+        on:pointerdown={() => game.character.jump()}
       >
         &uarr;
       </button>
       <button
         type="button"
         class="btn control"
-        on:pointerdown={() => character.crouch()}
+        on:pointerdown={() => game.character.crouch()}
       >
         &darr;
       </button>

@@ -40,11 +40,15 @@ class Character extends Element {
     this.motionDuration = JUMP_DURATION[isMobile() ? 'mobile' : 'desktop'];
     this.attachListeners();
 
-    game.on('play', () => (this.state = 'intro'));
     game.on('init', () => {
       this.x = game.el.width / 2 - this.width;
       this.y = game.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y;
       this.initial.y = this.y;
+    });
+    game.on('play', () => {
+      if (this.state === 'idle') {
+        this.state = 'intro';
+      }
     });
     game.on('restart', () => {
       this.y = game.el.height - CHAR_HEIGHT - CHAR_OFFSET_Y;
