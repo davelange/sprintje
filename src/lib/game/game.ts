@@ -41,7 +41,6 @@ class Game {
   }
 
   publish(event: Event) {
-    console.log(event);
     this.subs[event].forEach((cb) => cb({ event, status: this.status }));
   }
 

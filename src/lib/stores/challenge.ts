@@ -58,12 +58,7 @@ function challengeStore() {
 
   async function newChallenge() {
     const opts = randUniq(4);
-
     const correctIdx = opts[rand(3)];
-
-    console.log(opts);
-    console.log(correctIdx);
-
     const ch = data[correctIdx];
 
     _set({
