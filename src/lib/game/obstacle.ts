@@ -1,7 +1,8 @@
 import { DEBUG_BOX } from './data/game/constants';
 import { OBS_SPEED } from './data/obstacles/constants';
 import Element, { type ElementConfig } from './element';
-import { game, obstacleManager } from './index';
+//import { game, obstacleManager } from './index';
+import game from './game';
 
 interface ObstacleConfig extends ElementConfig {
   yMotionType: 'bounce' | 'rake';
@@ -79,7 +80,7 @@ class Obstacle extends Element {
 
     if (this.x + this.width < 0) {
       this.enabled = false;
-      obstacleManager.removeObstacle(this.id);
+      game.obstacleManager.removeObstacle(this.id);
     }
   }
 

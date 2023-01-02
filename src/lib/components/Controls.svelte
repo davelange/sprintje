@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { character, game } from '$lib/game';
+  //import { character, game } from '$lib/game';
+  import game from '$lib/game/game';
   import type Game from '$lib/game/game';
 
-  let status: Game['status'] = 'idle';
+  let status: typeof Game['status'] = 'idle';
   let show = false;
   $: showControls = ['running', 'pause'].includes(status);
+  $: character = game.character;
 
   game.on('all', ({ event }) => {
     if (event !== 'init') {

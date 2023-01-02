@@ -1,7 +1,8 @@
 import type Character from './character';
 import { CLEAR_REQUIREMENT } from './data/game/constants';
 import { OBS_VARIATIONS } from './data/obstacles/data';
-import { character, game } from './index';
+//import { character, game } from './index';
+import game from './game';
 import Obstacle from './obstacle';
 import isMobile from './utils/isMobile';
 import { rand } from './utils/rand';
@@ -94,7 +95,7 @@ class ObstacleManager {
 
   render() {
     this.update();
-    this.detectCollisions(character);
+    this.detectCollisions(game.character);
     this.obstacles.forEach((el) => el.render());
   }
 }

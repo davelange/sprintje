@@ -1,9 +1,12 @@
 <script lang="ts">
   import challenge from '$lib/stores/challenge';
-  import { game } from '$lib/game';
+  //import { game } from '$lib/game';
+  import game from '$lib/game/game';
+  import { page } from '$app/stores';
 
   let state: 'hidden' | 'intro' | 'challenge' | 'failed' | 'success' = 'hidden';
-  let reveal = window?.location.href.includes('reveal');
+  //let reveal = window?.location.href.includes('reveal');
+  let reveal = $page.url.href.includes('reveal');
 
   game.on('crash', () => {
     state = 'intro';

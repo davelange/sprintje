@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { game } from '$lib/game';
+  //import { game } from '$lib/game';
+  import game from '$lib/game/game';
 
   let canvasEl: HTMLCanvasElement;
   let show = false;
