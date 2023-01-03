@@ -17,7 +17,7 @@ class Game extends EveryNFrame {
   status: 'idle' | 'pause' | 'running' | 'crash' | 'game_over' = 'idle';
   frame = 0;
   lvl = 1;
-  points = 0;  
+  points = 0;
   highScore = 0;
   subs: Subscribers = {} as Subscribers;
 

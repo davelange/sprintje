@@ -1,32 +1,23 @@
+import EveryNFrame from './everyNFrame';
 import game from './game';
 
-export default class Announcer {
-  announceLvlUp = false;
-  announceLvlUpCounter = 0;
+export default class Announcer extends EveryNFrame {
+  lvlUpFlash = false;
+  lvlUpText = '';
 
   constructor() {
-    game.on(['up_level', 'crash'], () => (this.announceLvlUp = true));
-  }
+    super();
 
-  update() {
-    if (!this.announceLvlUp) return;
-
-    if (this.announceLvlUpCounter > 40) {
-      this.announceLvlUp = false;
-      this.announceLvlUpCounter = 0;
-    } else {
-      this.announceLvlUpCounter++;
-    }
+    game.on(['up_level', 'crash'], () => {
+      this.onFrame(8, () => (this.lvlUpFlash = !this.lvlUpFlash), 50);
+    });
   }
 
   renderPoints() {
     game.ctx.fillStyle = 'white';
     game.ctx.textAlign = 'left';
-    let lvlText = game.lvl.toString();
 
-    if (this.announceLvlUp) {
-      if (game.points % 2 === 0) lvlText = ' ';
-    }
+    const lvlText = this.lvlUpFlash ? '' : game.lvl.toString();
 
     game.ctx.fillText(
       `LVL ${lvlText} | ${game.points.toString().padStart(3, '0')}`,
@@ -44,7 +35,7 @@ export default class Announcer {
   }
 
   render() {
-    this.update();
+    this.runFrameOps();
     this.renderPoints();
     this.renderHiScore();
   }
