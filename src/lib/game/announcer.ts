@@ -3,12 +3,11 @@ import game from './game';
 
 export default class Announcer extends EveryNFrame {
   lvlUpFlash = false;
-  lvlUpText = '';
 
   constructor() {
     super();
 
-    game.on(['up_level', 'crash'], () => {
+    game.on('up_level', () => {
       this.onFrame(8, () => (this.lvlUpFlash = !this.lvlUpFlash), 50);
     });
   }
@@ -17,7 +16,7 @@ export default class Announcer extends EveryNFrame {
     game.ctx.fillStyle = 'white';
     game.ctx.textAlign = 'left';
 
-    const lvlText = this.lvlUpFlash ? '' : game.lvl.toString();
+    const lvlText = this.lvlUpFlash ? ' ' : game.lvl.toString();
 
     game.ctx.fillText(
       `LVL ${lvlText} | ${game.points.toString().padStart(3, '0')}`,

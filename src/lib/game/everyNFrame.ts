@@ -30,7 +30,7 @@ class EveryNFrame {
   }
 
   runOnFrames() {
-    const onFrOpsToRemove: number[] = [];
+    const itemsToRemove: number[] = [];
 
     this.onFrameOps.forEach((item, idx) => {
       if (item.counter === item.interval) {
@@ -43,13 +43,13 @@ class EveryNFrame {
       item.age++;
 
       if (item.age === item.duration) {
-        onFrOpsToRemove.push(idx);
+        itemsToRemove.push(idx);
       }
     });
 
-    if (onFrOpsToRemove.length) {
+    if (itemsToRemove.length) {
       this.onFrameOps = this.onFrameOps.filter(
-        (_, idx) => !onFrOpsToRemove.includes(idx)
+        (_, idx) => !itemsToRemove.includes(idx)
       );
     }
   }
