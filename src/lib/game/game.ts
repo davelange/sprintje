@@ -3,8 +3,9 @@ import isMobile from './utils/isMobile';
 import type { Event, SubUpdate, Subscribers } from './types';
 import { events } from './types';
 import type { Character, Announcer, Scenery, ObstacleManager } from './index';
+import EveryNFrame from './everyNFrame';
 
-class Game {
+class Game extends EveryNFrame {
   el: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
@@ -17,7 +18,6 @@ class Game {
   frame = 0;
   lvl = 1;
   points = 0;
-  pointsCounter = 0;
   highScore = 0;
   subs: Subscribers = {} as Subscribers;
 
@@ -31,6 +31,7 @@ class Game {
     this.setupCanvas(config.canvasEl);
     this.attachListeners();
     this.getHiScore();
+    this.onFrame(8, () => this.points++);
 
     this.character = config.character;
     this.announcer = config.announcer;
@@ -109,15 +110,6 @@ class Game {
     this.publish('crash');
   }
 
-  updatePoints() {
-    if (this.pointsCounter === 8) {
-      this.points++;
-      this.pointsCounter = 0;
-    } else {
-      this.pointsCounter++;
-    }
-  }
-
   render() {
     this.scenery.render();
     this.character.render();
@@ -129,7 +121,7 @@ class Game {
 
     if (this.status === 'running') {
       this.frame++;
-      this.updatePoints();
+      this.runFrameOps();
 
       requestAnimationFrame(this.render.bind(this));
     }
@@ -170,7 +162,6 @@ class Game {
   restart() {
     this.frame = 0;
     this.points = 0;
-    this.pointsCounter = 0;
     this.lvl = 1;
     this.status = 'running';
 
