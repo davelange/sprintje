@@ -1,10 +1,8 @@
 import { CHAR_OFFSET_Y } from '../character/constants';
-
-const GROUND_OBS_1 = {
+const GROUND_OBS = {
   width: 70,
   height: 65,
   y: 65 + CHAR_OFFSET_Y,
-  imgSrc: 'bike_1_sprite.png',
   btmp: [
     {
       sx: 0,
@@ -27,11 +25,10 @@ const GROUND_OBS_1 = {
   ]
 };
 
-const AIR_OBS_1 = {
+const AIR_OBS = {
   width: 70,
   height: 65,
   y: 170,
-  imgSrc: 'bike_3_sprite.png',
   btmp: [
     {
       sx: 0,
@@ -54,6 +51,23 @@ const AIR_OBS_1 = {
   ]
 };
 
-const OBS_VARIATIONS = [GROUND_OBS_1, AIR_OBS_1];
+const OBS_1 = {
+  ...GROUND_OBS,
+  imgSrc: 'bike_sprite_purple.png'
+};
+const OBS_2 = {
+  ...GROUND_OBS,
+  imgSrc: 'bike_sprite_red.png'
+};
+const OBS_3 = {
+  ...GROUND_OBS,
+  imgSrc: 'bike_sprite_yellow.png'
+};
+const OBS_4 = {
+  ...AIR_OBS,
+  imgSrc: 'bike_sprite_clay.png'
+};
+
+const OBS_VARIATIONS = [OBS_1, OBS_2, OBS_3, OBS_4];
 
 export { OBS_VARIATIONS };

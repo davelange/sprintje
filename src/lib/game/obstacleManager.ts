@@ -63,12 +63,12 @@ class ObstacleManager {
       this.entryPointInd = 0;
     }
 
-    let obsType = 0;
+    let obsType = rand(0, 2);
     let yMotionType: 'rake' | 'bounce' = 'bounce';
 
     if (game.lvl > 1) {
       if (this.previous === 'ground') {
-        obsType = rand(0, 1);
+        obsType = rand(0, 3);
 
         if (obsType) {
           this.previous = 'air';
@@ -94,8 +94,8 @@ class ObstacleManager {
 
   render() {
     this.update();
-    this.detectCollisions(game.character);
     this.obstacles.forEach((el) => el.render());
+    this.detectCollisions(game.character);
   }
 }
 
