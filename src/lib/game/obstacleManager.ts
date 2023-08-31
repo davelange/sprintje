@@ -1,5 +1,5 @@
 import type Character from './character';
-import { CLEAR_REQUIREMENT } from './data/game/constants';
+import { CLEAR_REQUIREMENT, NEVER_CRASH } from './data/game/constants';
 import { OBS_VARIATIONS } from './data/obstacles/data';
 import game from './game';
 import Obstacle from './obstacle';
@@ -95,7 +95,10 @@ class ObstacleManager {
   render() {
     this.update();
     this.obstacles.forEach((el) => el.render());
-    this.detectCollisions(game.character);
+
+    if (!NEVER_CRASH) {
+      this.detectCollisions(game.character);
+    }
   }
 }
 

@@ -1,43 +1,36 @@
-import { easeOutCirc } from './utils/ease';
+import { ease, type Easing } from './utils/ease';
 import Element, { type ElementConfig } from './element';
 import game from './game';
 import {
   CHAR_HEIGHT,
   CHAR_OFFSET_X,
   CHAR_OFFSET_Y,
-  JUMP_DURATION,
-  JUMP_HEIGHT
+  type MotionType
 } from './data/character/constants';
 import { DEBUG_BOX } from './data/game/constants';
-import isMobile from './utils/isMobile';
+import { closeToEndOfMotion, getDuration } from './data/character/utils';
 
 class Character extends Element {
   state:
     | 'intro'
     | 'idle'
     | 'running'
-    | 'jump_asc'
-    | 'jump_desc'
-    | 'crouch_asc'
-    | 'crouch_desc' = 'idle';
+    | 'jumpAsc'
+    | 'jumpDesc'
+    | 'crouchAsc'
+    | 'crouchDesc' = 'idle';
   initial = {
     x: 0,
     y: 0,
     height: 0
   };
-  motionDuration = 0;
   motionProgress = 0;
   easeAcc = 0;
-  motionPoints = {
-    jump: [] as number[],
-    crouch: [] as number[]
-  };
 
   constructor(config: ElementConfig) {
     super(config);
 
     this.initial = { x: this.x, y: this.y, height: this.height };
-    this.motionDuration = JUMP_DURATION[isMobile() ? 'mobile' : 'desktop'];
     this.attachListeners();
 
     game.on('init', () => {
@@ -75,59 +68,96 @@ class Character extends Element {
     }
   }
 
+  forceMotion(motion: MotionType) {
+    this.state = 'running';
+
+    this.afterFrames(1, () => {
+      this.resetMotionTracking();
+      this.state = motion;
+    });
+  }
+
   jump() {
     if (this.state == 'running') {
-      this.state = 'jump_asc';
+      this.resetMotionTracking();
+      this.state = 'jumpAsc';
+
+      return;
+    }
+
+    if (
+      this.state === 'jumpDesc' &&
+      closeToEndOfMotion(
+        this.motionProgress,
+        getDuration(this.state as MotionType)
+      )
+    ) {
+      this.forceMotion('jumpAsc');
     }
   }
 
   crouch() {
     if (this.state == 'running') {
-      this.state = 'crouch_asc';
+      this.state = 'crouchDesc';
+
+      return;
+    }
+
+    if (
+      this.state === 'crouchAsc' &&
+      closeToEndOfMotion(
+        this.motionProgress,
+        getDuration(this.state as MotionType)
+      )
+    ) {
+      this.forceMotion('crouchDesc');
     }
   }
 
-  calcEasedMotion(motion: 'jump' | 'crouch') {
+  moveWithEase(force: number, motion: MotionType, easing: Easing) {
     const progressDecimal =
-      (this.motionProgress * 100) / this.motionDuration / 100;
-    const easedVal = easeOutCirc(progressDecimal);
+      (this.motionProgress * 100) / getDuration(motion) / 100;
+    const easedVal = ease(progressDecimal, easing);
     const frameEase = easedVal - this.easeAcc;
 
-    let point = 0;
-
-    if (motion === 'crouch') {
-      point = this.y + frameEase * JUMP_HEIGHT;
-    } else if (motion === 'jump') {
-      point = this.y - frameEase * JUMP_HEIGHT;
-    }
-
-    this.y = point;
+    this.y += frameEase * force;
     this.easeAcc += frameEase;
-    this.motionPoints[motion].push(point);
   }
 
-  jumpOrCrouchAsc(motion: 'jump' | 'crouch') {
-    if (this.motionProgress < this.motionDuration) {
-      if (this.motionPoints[motion].length < this.motionDuration) {
-        this.calcEasedMotion(motion);
-      } else {
-        this.y = this.motionPoints[motion][this.motionProgress];
-      }
+  resetMotionTracking() {
+    this.motionProgress = 0;
+    this.easeAcc = 0;
+  }
 
+  jumpOrCrouch(motion: MotionType) {
+    const isAsc = motion.endsWith('Asc');
+
+    if (this.motionProgress < getDuration(motion)) {
+      this.moveWithEase(
+        isAsc ? -100 : 100,
+        motion,
+        ['jumpAsc', 'crouchDesc'].includes(motion)
+          ? 'easeOutCirc'
+          : 'easeOutBounce'
+      );
       this.motionProgress++;
     } else {
-      this.state = motion === 'jump' ? 'jump_desc' : 'crouch_desc';
-      this.easeAcc = 0;
-    }
-  }
+      this.resetMotionTracking();
 
-  jumpOrCrouchDesc(motion: 'jump' | 'crouch') {
-    if (this.motionProgress > 0) {
-      this.motionProgress--;
-      this.y = this.motionPoints[motion][this.motionProgress];
-    } else {
-      this.state = 'running';
-      this.y = this.initial.y;
+      switch (this.state) {
+        case 'jumpAsc':
+          this.state = 'jumpDesc';
+          break;
+
+        case 'crouchDesc':
+          this.state = 'crouchAsc';
+          break;
+
+        default:
+          this.y = this.initial.y;
+          this.state = 'running';
+          break;
+      }
     }
   }
 
@@ -142,20 +172,11 @@ class Character extends Element {
 
         break;
 
-      case 'jump_asc':
-        this.jumpOrCrouchAsc('jump');
-        break;
-
-      case 'jump_desc':
-        this.jumpOrCrouchDesc('jump');
-        break;
-
-      case 'crouch_asc':
-        this.jumpOrCrouchAsc('crouch');
-        break;
-
-      case 'crouch_desc':
-        this.jumpOrCrouchDesc('crouch');
+      case 'jumpAsc':
+      case 'jumpDesc':
+      case 'crouchAsc':
+      case 'crouchDesc':
+        this.jumpOrCrouch(this.state);
         break;
     }
   }
@@ -167,6 +188,7 @@ class Character extends Element {
 
     this.update();
     this.manageSprite();
+    this.runFrameOps();
 
     if (DEBUG_BOX) {
       game.ctx.strokeStyle = 'rgb(0, 0, 0)';

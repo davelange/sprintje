@@ -63,7 +63,7 @@ class Obstacle extends Element {
       game.ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
 
-    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x - 20, this.y);
+    game.ctx.drawImage(this.imgBtmp[this.spriteInd], this.x - 20, this.y - 10);
   }
 }
 

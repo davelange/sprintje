@@ -1,54 +1,36 @@
 import { CHAR_OFFSET_Y } from '../character/constants';
+import {
+  AIR_OBS_SPRITE_W,
+  GROUND_OBS_H,
+  GROUND_OBS_SPRITE_W
+} from './constants';
+
+const groundObsConfig = (n: number) => ({
+  sx: (GROUND_OBS_SPRITE_W / 3) * n,
+  sy: 0,
+  sw: GROUND_OBS_SPRITE_W / 3,
+  sh: 70
+});
+
 const GROUND_OBS = {
   width: 70,
-  height: 65,
-  y: 65 + CHAR_OFFSET_Y,
-  btmp: [
-    {
-      sx: 0,
-      sy: 0,
-      sw: 329 / 3,
-      sh: 70
-    },
-    {
-      sx: 110,
-      sy: 0,
-      sw: 329 / 3,
-      sh: 70
-    },
-    {
-      sx: 220,
-      sy: 0,
-      sw: 329 / 3,
-      sh: 70
-    }
-  ]
+  height: GROUND_OBS_H,
+  y: GROUND_OBS_H + CHAR_OFFSET_Y,
+  btmp: [groundObsConfig(0), groundObsConfig(1), groundObsConfig(2)]
 };
+
+const airObsConfig = (n: number) => ({
+  sx: (AIR_OBS_SPRITE_W / 3) * n,
+  sy: 0,
+  sw: GROUND_OBS_SPRITE_W / 3,
+  sh: 66
+});
 
 const AIR_OBS = {
   width: 70,
   height: 65,
   y: 170,
-  btmp: [
-    {
-      sx: 0,
-      sy: 0,
-      sw: 326 / 3,
-      sh: 66
-    },
-    {
-      sx: 109,
-      sy: 0,
-      sw: 326 / 3,
-      sh: 66
-    },
-    {
-      sx: 218,
-      sy: 0,
-      sw: 326 / 3,
-      sh: 66
-    }
-  ]
+  btmp: [airObsConfig(0), airObsConfig(1), airObsConfig(2)]
 };
 
 const OBS_1 = {

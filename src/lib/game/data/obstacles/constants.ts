@@ -20,4 +20,8 @@ export const OBS_RESET_FREQ: Record<number, number> = {
   6: 8
 };
 
+export const GROUND_OBS_H = 60;
+export const GROUND_OBS_OFFSET_Y = 60;
 export const OBS_RESET_DIST = 10;
+export const GROUND_OBS_SPRITE_W = 329;
+export const AIR_OBS_SPRITE_W = 326;
