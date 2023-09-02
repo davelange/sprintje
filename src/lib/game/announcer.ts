@@ -8,7 +8,7 @@ export default class Announcer extends EveryNFrame {
     super();
 
     game.on('up_level', () => {
-      this.onFrame(8, () => (this.lvlUpFlash = !this.lvlUpFlash), 50);
+      this.onFrame(8, () => (this.lvlUpFlash = !this.lvlUpFlash), 40);
     });
   }
 

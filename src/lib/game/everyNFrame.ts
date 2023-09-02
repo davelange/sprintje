@@ -29,7 +29,7 @@ class EveryNFrame {
     });
   }
 
-  runOnFrames() {
+  private runOnFrames() {
     const itemsToRemove: number[] = [];
 
     this.onFrameOps.forEach((item, idx) => {
@@ -54,7 +54,7 @@ class EveryNFrame {
     }
   }
 
-  runAfterFrames() {
+  private runAfterFrames() {
     const itemsToRemove: number[] = [];
 
     this.afterFrameOps.forEach((item, idx) => {

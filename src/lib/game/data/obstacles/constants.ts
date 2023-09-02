@@ -8,7 +8,7 @@ export const OBS_SPEED: Record<number, number> = {
   7: 12,
   8: 13,
   9: 14,
-  10: 16
+  10: 15
 };
 
 export const OBS_RESET_FREQ: Record<number, number> = {

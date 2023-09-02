@@ -11,14 +11,29 @@ class Obstacle extends Element {
   enabled = true;
   yMotion = 0;
   yMotionModifier = 0;
+  speed = OBS_SPEED[1];
 
   constructor(config: ObstacleConfig) {
     super(config);
 
+    this.speed = OBS_SPEED[game.lvl];
     this.onFrame(1, () => this.manageSprite());
     this.setupYMotion(config.yMotionType);
+    game.on('up_level', () => this.handleUpLevel());
 
     return this;
+  }
+
+  handleUpLevel() {
+    const prevLvlSpeed = OBS_SPEED[game.lvl - 1];
+    const currentLvlSpeed = OBS_SPEED[game.lvl];
+    const midPointToNext = prevLvlSpeed + (currentLvlSpeed - prevLvlSpeed) / 2;
+
+    this.speed = midPointToNext;
+
+    this.afterFrames(2, () => {
+      this.speed = currentLvlSpeed;
+    });
   }
 
   setupYMotion(motionType: 'bounce' | 'rake') {
@@ -42,7 +57,8 @@ class Obstacle extends Element {
   update() {
     if (!this.enabled) return;
 
-    this.x -= OBS_SPEED[game.lvl];
+    /* this.x -= OBS_SPEED[game.lvl]; */
+    this.x -= this.speed;
 
     if (this.x + this.width < 0) {
       this.enabled = false;

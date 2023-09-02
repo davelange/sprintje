@@ -86,7 +86,7 @@ class Character extends Element {
     }
 
     if (
-      this.state === 'jumpDesc' &&
+      ['crouchAsc', 'jumpDesc'].includes(this.state) &&
       closeToEndOfMotion(
         this.motionProgress,
         getDuration(this.state as MotionType)
@@ -104,7 +104,7 @@ class Character extends Element {
     }
 
     if (
-      this.state === 'crouchAsc' &&
+      ['crouchAsc', 'jumpDesc'].includes(this.state) &&
       closeToEndOfMotion(
         this.motionProgress,
         getDuration(this.state as MotionType)
